@@ -34,7 +34,7 @@ function init_table()
   insert("ruby", "rubocop", "-f quiet -o") -- Maybe switch to https://github.com/ruby-formatter/rufo ?
   insert("rust", "rustfmt", nil) -- no args, overwrite is default
   insert("shell", "shfmt", "-s -w")
-  insert({"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql"}, "prettier", "--write") -- prettier supports a lot of filetypes
+  insert({"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"}, "prettier", "--write") -- prettier supports a lot of filetypes
 end
 
 function create_options()
