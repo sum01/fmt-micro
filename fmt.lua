@@ -30,7 +30,7 @@ function init_table()
   insert("fish", "fish_indent", "-w")
   insert("go", "gofmt", "-w")
   insert("lua", "luafmt", "-w replace") -- stdout is default, so set to replace
-  insert("ruby", "rubocop", "-a") -- Maybe switch to https://github.com/ruby-formatter/rufo ?
+  insert("ruby", "rubocop", "-f quiet -o") -- Maybe switch to https://github.com/ruby-formatter/rufo ?
   insert("rust", "rustfmt", nil) -- no args, overwrite is default
   insert("shell", "shfmt", "-s -w")
   insert({"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql"}, "prettier", "--write") -- prettier supports a lot of filetypes
