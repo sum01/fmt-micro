@@ -29,7 +29,7 @@ function init_table()
     -- PS: Alphabetical order doesn't matter here.
   insert("fish", "fish_indent", "-w")
   insert("go", "gofmt", "-w")
-  insert("lua", "luafmt", nil) -- no args, overwrite is default (?)
+  insert("lua", "luafmt", "-w replace") -- stdout is default, so set to replace
   insert("ruby", "rubocop", "-a") -- Maybe switch to https://github.com/ruby-formatter/rufo ?
   insert("rust", "rustfmt", nil) -- no args, overwrite is default
   insert("shell", "shfmt", "-s -w")
