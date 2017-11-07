@@ -5,16 +5,16 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 
 ## Supported list
 
-|Language(s)|Formatter
+|Formatter|Language(s)
 |:---|:---
-|`crystal`|[crystalfmt](https://github.com/crystal-lang/crystal)
-|`fish`|[fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)
-|`go`|[gofmt](https://golang.org/cmd/gofmt/)
-|`lua`|[luafmt](https://github.com/trixnz/lua-fmt)
-|`ruby`|[rubocop](https://github.com/bbatsov/rubocop)
-|`rust`|[rustfmt](https://github.com/rust-lang-nursery/rustfmt)
-|`shell`|[shfmt](https://github.com/mvdan/sh)
-|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, and `graphql`|[prettier](https://github.com/prettier/prettier)
+|[crystalfmt](https://github.com/crystal-lang/crystal)|`crystal`
+|[fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)|`fish`
+|[gofmt](https://golang.org/cmd/gofmt/)|`go`
+|[luafmt](https://github.com/trixnz/lua-fmt)|`lua`
+|[rubocop](https://github.com/bbatsov/rubocop)|`ruby`
+|[rustfmt](https://github.com/rust-lang-nursery/rustfmt)|`rust`
+|[shfmt](https://github.com/mvdan/sh)|`shell`
+|[prettier](https://github.com/prettier/prettier)|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, `graphql`
 
 Note that you can also get a list of formatters by running the `fmt` command.
 
