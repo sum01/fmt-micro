@@ -1,4 +1,4 @@
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 -- TODO: Add a command to show the supported filetypes & their respective formatter.
 
