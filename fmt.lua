@@ -27,7 +27,7 @@ function init_table()
     -- the middle command is the literal command to run the formatter via cli.
     -- The right is the flags, if any. If none needed, pass a `nil` value. Do NOT leave it empty!
     -- PS: Alphabetical order doesn't matter here.
-  insert("crystal", "crystalfmt", "tool format")
+  insert("crystal", "crystal", "tool format")
   insert("fish", "fish_indent", "-w")
   insert("go", "gofmt", "-w")
   insert("lua", "luafmt", "-w replace") -- stdout is default, so set to replace
