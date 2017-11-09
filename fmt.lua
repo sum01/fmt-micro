@@ -122,7 +122,7 @@ function format()
         cmd = cmd .. " " .. target_fmt[2]
       end
 
-      messenger:AddLog("fmt: Running \"" .. target_fmt[1] .. "\" on \"" .. cur_view.Buf.Path .. "\"")
+      messenger:AddLog("fmt: Running \"" .. cmd .. "\" on \"" .. cur_view.Buf.Path .. "\"")
       
       -- Actually run the format command
       local handle = io.popen(cmd .. " " .. cur_view.Buf.Path)
