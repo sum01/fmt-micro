@@ -79,11 +79,34 @@ function list_supported()
 end
 
 function format()
-  -- Prevent infinite loop of onSave()
-  CurView():Save(false)
+  function get_filetype(cview)
+    -- What we'll return (assuming all goes well)
+    local type = ""
 
-  local file_type = CurView().Buf:FileType()
+    -- Iterates through the path, and captures any letters after a period
+    -- Since it's an iter, the last pass will be the extension (if it exists)
+    for gstring in string.gmatch(cview.Buf.Path, "%.(%a*)") do
+      type = gstring
+    end
+
+    messenger:AddLog("fmt: Micro failed to get filetype, but I detected: ", type)
+    return type
+  end
+  
+  -- Make sure everything deals with the same view, if somehow it changed mid-function.
+  local cur_view = CurView()
+  -- Prevent infinite loop of onSave()
+  cur_view:Save(false)
+
+  local file_type = cur_view.Buf:FileType()
+
+  -- Returns "Unknown" when Micro can't file the type, so we just grab the extension
+  if file_type == "Unknown" then
+    file_type = get_filetype(cur_view)
+  end
+
   -- The literal filetype name (`rust`, `shell`, etc.) is the table's key
+  -- The literal file extension can be used when Micro can't support the filetype
   -- [1] is the cmd, [2] is args
   local target_fmt = fmt_table[file_type]
   
@@ -98,13 +121,15 @@ function format()
         -- Add a space between cmd & args
         cmd = cmd .. " " .. target_fmt[2]
       end
+
+      messenger:AddLog("fmt: Running \"" .. target_fmt[1] .. "\" on \"" .. cur_view.Buf.Path .. "\"")
       
       -- Actually run the format command
-      local handle = io.popen(cmd .. " " .. CurView().Buf.Path)
+      local handle = io.popen(cmd .. " " .. cur_view.Buf.Path)
       local result = handle:read("*a")
       handle:close()
       -- Reload
-      CurView():ReOpen()
+      cur_view:ReOpen()
     end
   end
 end
