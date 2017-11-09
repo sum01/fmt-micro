@@ -3,7 +3,7 @@ This is a multi-language formatting plugin for the [Micro text-editor.](https://
 
 Note that this plugin can only run installed/built-in formatters (such as `rustfmt` or `gofmt`).
 
-## Supported list
+## Supported formatters
 
 |Formatter|Language(s)
 |:---|:---
@@ -14,7 +14,7 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 |[rubocop](https://github.com/bbatsov/rubocop)|`ruby`
 |[rustfmt](https://github.com/rust-lang-nursery/rustfmt)|`rust`
 |[shfmt](https://github.com/mvdan/sh)|`shell`
-|[prettier](https://github.com/prettier/prettier)|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, `graphql`
+|[prettier](https://github.com/prettier/prettier)|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, `graphql`, `markdown`
 
 Note that you can also get a list of formatters by running the `fmt` command.
 
