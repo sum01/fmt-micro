@@ -20,13 +20,6 @@ function init_table()
     end
   end
 
-  -- How to add another formatter:
-    -- Do NOT add a formatter for an already supported filetype. There must not be dulplicate keys!
-    -- No spaces anywhere, except when using multiple flags/args, and only between them.
-    -- the literal filetype, returned by CurView().Buf:FileType(), goes on the left (as a string). If 2+ supported, add them as a table (see prettier below).
-    -- the middle command is the literal command to run the formatter via cli.
-    -- The right is the flags, if any. If none needed, pass a `nil` value. Do NOT leave it empty!
-    -- PS: Alphabetical order doesn't matter here.
   insert("crystal", "crystal", "tool format")
   insert("fish", "fish_indent", "-w")
   insert("go", "gofmt", "-w")
