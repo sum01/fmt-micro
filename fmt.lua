@@ -44,32 +44,36 @@ function init_table()
 
   -- Get the user's settings to be used in args
   local usr_settings = get_settings()
-  
+
   local indent_size = usr_settings["indent_size"]
   local is_tabs = usr_settings["is_tabs"]
   local compat_indent_size = usr_settings["compat_indent_size"]
-  
+
   -- nil to trigger garbage collection
   usr_settings = nil
-  
+
   insert("crystal", "crystal", "tool format")
   insert("fish", "fish_indent", "-w")
-   -- Maybe switch to https://github.com/ruby-formatter/rufo 
+  -- Maybe switch to https://github.com/ruby-formatter/rufo
   insert("ruby", "rubocop", "-f quiet -o")
   -- Doesn't have any configurable args, and forces tabs.
   insert("go", "gofmt", "-w")
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", "-i ".. indent_size .. " -w replace")
+  insert("lua", "luafmt", "-i " .. indent_size .. " -w replace")
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
-  insert({"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"}, "prettier", "--use-tabs " .. is_tabs .. " --tab-width " .. indent_size .. " --write")
+  insert(
+    {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
+    "prettier",
+    "--use-tabs " .. is_tabs .. " --tab-width " .. indent_size .. " --write"
+  )
   -- 0 signifies tabs, so we use compat
   insert("shell", "shfmt", "-i " .. compat_indent_size .. " -s -w")
-   -- overwrite is default. Can't pass config options, configured via rustfmt.toml
+  -- overwrite is default. Can't pass config options, configured via rustfmt.toml
   insert("rust", "rustfmt", nil)
 end
 
 function create_options()
--- Declares the table & options to enable/disable formatter(s)
+  -- Declares the table & options to enable/disable formatter(s)
   -- Avoids manually defining commands twice by reading the table
   for _, value in pairs(fmt_table) do
     -- Creates the options to enable/disable formatters individually
@@ -90,7 +94,7 @@ end
 
 function list_supported()
   local supported = {}
-  
+
   -- Declares the table & options to enable/disable formatter(s)
   -- Avoids manually defining commands twice by reading the table
   for _, value in pairs(fmt_table) do
@@ -123,7 +127,7 @@ function format(cur_view)
     messenger:AddLog("fmt: Micro failed to get filetype, but I detected: ", type)
     return type
   end
-  
+
   -- Prevent infinite loop of onSave()
   cur_view:Save(false)
 
@@ -138,7 +142,7 @@ function format(cur_view)
   -- The literal file extension can be used when Micro can't support the filetype
   -- [1] is the cmd, [2] is args
   local target_fmt = fmt_table[file_type]
-  
+
   -- Only do anything if the filetype has is a supported formatter
   if target_fmt ~= nil then
     -- Only do anything if the specified formatter is enabled
@@ -151,8 +155,8 @@ function format(cur_view)
         cmd = cmd .. " " .. target_fmt[2]
       end
 
-      messenger:AddLog("fmt: Running \"" .. cmd .. "\" on \"" .. cur_view.Buf.Path .. "\"")
-      
+      messenger:AddLog('fmt: Running "' .. cmd .. '" on "' .. cur_view.Buf.Path .. '"')
+
       -- Actually run the format command
       local handle = io.popen(cmd .. " " .. cur_view.Buf.Path)
       local result = handle:read("*a")
@@ -171,7 +175,7 @@ function onSave(view)
   end
   -- nil to trigger garbage collection
   settings = nil
-  
+
   format(view)
 end
 
