@@ -15,6 +15,7 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 |[rustfmt](https://github.com/rust-lang-nursery/rustfmt)|`rust`
 |[shfmt](https://github.com/mvdan/sh)|`shell`
 |[prettier](https://github.com/prettier/prettier)|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, `graphql`, `markdown`
+|[yapf](https://github.com/google/yapf)|`python`
 
 Note that you can also get a list of formatters by running the `fmt` command.
 

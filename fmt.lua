@@ -70,6 +70,8 @@ function init_table()
   insert("shell", "shfmt", "-i " .. compat_indent_size .. " -s -w")
   -- overwrite is default. Can't pass config options, configured via rustfmt.toml
   insert("rust", "rustfmt", nil)
+  -- Doesn't support configurable args for tabs/spaces
+  insert("python", "yapf", "-i")
 end
 
 function create_options()
