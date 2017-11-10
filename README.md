@@ -14,6 +14,7 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 |[rubocop](https://github.com/bbatsov/rubocop)|`ruby`
 |[rustfmt](https://github.com/rust-lang-nursery/rustfmt)|`rust`
 |[shfmt](https://github.com/mvdan/sh)|`shell`
+|[php-cs-fixer](https://github.com/friendsofphp/PHP-CS-Fixer)|`php`
 |[prettier](https://github.com/prettier/prettier)|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, `graphql`, `markdown`
 |[yapf](https://github.com/google/yapf)|`python`
 

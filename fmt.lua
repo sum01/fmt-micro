@@ -72,6 +72,8 @@ function init_table()
   insert("rust", "rustfmt", nil)
   -- Doesn't support configurable args for tabs/spaces
   insert("python", "yapf", "-i")
+  -- Does more than just format, but considering this is the best formatter for php, I'll allow it...
+  insert("php", "php-cs-fixer", "fix")
 end
 
 function create_options()
