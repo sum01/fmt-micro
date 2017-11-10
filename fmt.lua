@@ -71,14 +71,14 @@ function list_supported()
   messenger:Message("fmt's supported formatters: " .. table.concat(supported, ", ") .. ".")
 end
 
-function format()
-  function get_filetype(cview)
+function format(cur_view)
+  function get_filetype()
     -- What we'll return (assuming all goes well)
     local type = ""
 
     -- Iterates through the path, and captures any letters after a period
     -- Since it's an iter, the last pass will be the extension (if it exists)
-    for gstring in string.gmatch(cview.Buf.Path, "%.(%a*)") do
+    for gstring in string.gmatch(cur_view.Buf.Path, "%.(%a*)") do
       type = gstring
     end
 
@@ -86,8 +86,6 @@ function format()
     return type
   end
   
-  -- Make sure everything deals with the same view, if somehow it changed mid-function.
-  local cur_view = CurView()
   -- Prevent infinite loop of onSave()
   cur_view:Save(false)
 
@@ -95,7 +93,7 @@ function format()
 
   -- Returns "Unknown" when Micro can't file the type, so we just grab the extension
   if file_type == "Unknown" then
-    file_type = get_filetype(cur_view)
+    file_type = get_filetype()
   end
 
   -- The literal filetype name (`rust`, `shell`, etc.) is the table's key
@@ -128,7 +126,7 @@ function format()
 end
 
 function onSave(view)
-  format()
+  format(view)
 end
 
 -- User command & help file
