@@ -2,6 +2,28 @@ VERSION = "1.2.1"
 
 -- TODO: Add a command to show the supported filetypes & their respective formatter.
 
+function get_settings()
+  -- Get user settings to use in formatter args
+  local indent_size = GetOption("tabsize") -- can't be 0
+  local is_tabs = ""
+  -- returns a bool
+  if GetOption("tabstospaces") then
+    -- We need to use this with concat in init_table, so use a string instead of bool
+    is_tabs = "false"
+  else
+    is_tabs = "true"
+  end
+  -- Used for some args to signify tabs
+  local compat_indent_size = indent_size
+
+  if is_tabs == "true" then
+    -- shfmt uses this, as 0 signifies tabs
+    compat_indent_size = "0"
+  end
+
+  return {["indent_size"] = indent_size, ["is_tabs"] = is_tabs, ["compat_indent_size"] = compat_indent_size}
+end
+
 function init_table()
   -- Dictionary of commands for easy lookup & manipulation.
   fmt_table = {}
@@ -20,14 +42,30 @@ function init_table()
     end
   end
 
+  -- Get the user's settings to be used in args
+  local usr_settings = get_settings()
+  
+  local indent_size = usr_settings["indent_size"]
+  local is_tabs = usr_settings["is_tabs"]
+  local compat_indent_size = usr_settings["compat_indent_size"]
+  
+  -- nil to trigger garbage collection
+  usr_settings = nil
+  
   insert("crystal", "crystal", "tool format")
   insert("fish", "fish_indent", "-w")
+   -- Maybe switch to https://github.com/ruby-formatter/rufo 
+  insert("ruby", "rubocop", "-f quiet -o")
+  -- Doesn't have any configurable args, and forces tabs.
   insert("go", "gofmt", "-w")
-  insert("lua", "luafmt", "-w replace") -- stdout is default, so set to replace
-  insert("ruby", "rubocop", "-f quiet -o") -- Maybe switch to https://github.com/ruby-formatter/rufo ?
-  insert("rust", "rustfmt", nil) -- no args, overwrite is default
-  insert("shell", "shfmt", "-s -w")
-  insert({"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"}, "prettier", "--write") -- prettier supports a lot of filetypes
+  -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
+  insert("lua", "luafmt", "-i ".. indent_size .. " -w replace")
+  -- Supports config files as well as cli options, unsure if this'll cause a clash.
+  insert({"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"}, "prettier", "--use-tabs " .. is_tabs .. " --tab-width " .. indent_size .. " --write")
+  -- 0 signifies tabs, so we use compat
+  insert("shell", "shfmt", "-i " .. compat_indent_size .. " -s -w")
+   -- overwrite is default. Can't pass config options, configured via rustfmt.toml
+  insert("rust", "rustfmt", nil)
 end
 
 function create_options()
@@ -126,6 +164,14 @@ function format(cur_view)
 end
 
 function onSave(view)
+  local settings = get_settings()
+  if settings["indent_size"] ~= GetOption("tabsize") or settings["is_tabs"] ~= GetOption("tabstospaces") then
+    -- Reload the table (to get new args) if the user has changed their settings since opening Micro
+    init_table()
+  end
+  -- nil to trigger garbage collection
+  settings = nil
+  
   format(view)
 end
 
