@@ -16,6 +16,7 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 |[shfmt](https://github.com/mvdan/sh)|`Shell`
 |[php-cs-fixer](https://github.com/friendsofphp/PHP-CS-Fixer)|`PHP`
 |[prettier](https://github.com/prettier/prettier)|`Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown`
+|[uncrustify](https://github.com/uncrustify/uncrustify)|`C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`
 |[yapf](https://github.com/google/yapf)|`Python`
 
 Note that you can also get a list of formatters by running the `fmt` command.

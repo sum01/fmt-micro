@@ -50,6 +50,17 @@ function init_table()
   -- nil to trigger garbage collection
   usr_settings = nil
 
+  -- Use os-specific slash for paths
+  local os_slash = "/"
+  if OS == "windows" then
+    os_slash = "\\"
+  end
+  -- Bulds the path to the current config dir. configDir is a Micro-specific var that returns the path to Micro's config dir.
+  local fmt_conf_path = configDir .. os_slash .. "plugins" .. os_slash .. "fmt" .. os_slash .. "configs"
+  -- Saves the path to uncrustify's config file (which is required to run), but don't hard-code a name to allow for user replacement.
+  local uncrustify_confpath = fmt_conf_path .. os_slash .. "uncrustify"
+  messenger:AddLog('fmt: configs loaded from path "', fmt_conf_path .. '"')
+
   insert("crystal", "crystal", "tool format")
   insert("fish", "fish_indent", "-w")
   -- Maybe switch to https://github.com/ruby-formatter/rufo
@@ -72,6 +83,12 @@ function init_table()
   insert("python", "yapf", "-i")
   -- Does more than just format, but considering this is the best formatter for php, I'll allow it...
   insert("php", "php-cs-fixer", "fix")
+  -- p is for the Pawn language. Micro can't detect it, so we're using the literal extension fallback.
+  insert(
+    {"c", "c++", "csharp", "objective-c", "d", "java", "p", "vala"},
+    "uncrustify",
+    "-c " .. uncrustify_confpath .. " --no-backup"
+  )
 end
 
 function create_options()
