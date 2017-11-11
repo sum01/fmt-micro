@@ -7,16 +7,16 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 
 |Formatter|Language(s)
 |:---|:---
-|[crystal tool format](https://github.com/crystal-lang/crystal)|`crystal`
-|[fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)|`fish`
-|[gofmt](https://golang.org/cmd/gofmt/)|`go`
-|[luafmt](https://github.com/trixnz/lua-fmt)|`lua`
-|[rubocop](https://github.com/bbatsov/rubocop)|`ruby`
-|[rustfmt](https://github.com/rust-lang-nursery/rustfmt)|`rust`
-|[shfmt](https://github.com/mvdan/sh)|`shell`
-|[php-cs-fixer](https://github.com/friendsofphp/PHP-CS-Fixer)|`php`
-|[prettier](https://github.com/prettier/prettier)|`javascript`, `jsx`, `flow`, `typescript`, `css`, `less`, `scss`, `json`, `graphql`, `markdown`
-|[yapf](https://github.com/google/yapf)|`python`
+|[crystal tool format](https://github.com/crystal-lang/crystal)|`Crystal`
+|[fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)|`Fish`
+|[gofmt](https://golang.org/cmd/gofmt/)|`Go`
+|[luafmt](https://github.com/trixnz/lua-fmt)|`Lua`
+|[rubocop](https://github.com/bbatsov/rubocop)|`Ruby`
+|[rustfmt](https://github.com/rust-lang-nursery/rustfmt)|`Rust`
+|[shfmt](https://github.com/mvdan/sh)|`Shell`
+|[php-cs-fixer](https://github.com/friendsofphp/PHP-CS-Fixer)|`PHP`
+|[prettier](https://github.com/prettier/prettier)|`Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown`
+|[yapf](https://github.com/google/yapf)|`Python`
 
 Note that you can also get a list of formatters by running the `fmt` command.
 
