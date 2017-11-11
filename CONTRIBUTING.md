@@ -1,8 +1,14 @@
 # Contributing
-To contribute, make sure you use the [editorconfig](http://editorconfig.org/) and [luafmt](https://github.com/trixnz/lua-fmt) plugin's to keep everything uniform.
+Everything below assumes you're using [the Micro text-editor](https://github.com/zyedidia/micro) and this `fmt` plugin...
 
-To get something merged, first fork the repo, create a branch from `master`, push your changes, then submit a PR.  
-Don't commit tons of changes in one big commit. Instead, use `git commit -p` to selectively add lines, then commit relevant changes.
+**Tooling for contributions:**  
+- Use the [editorconfig](http://editorconfig.org/) plugin to keep everything uniform, which can be installed by doing `plugin install editorconfig`
+- Use [luafmt](https://github.com/trixnz/lua-fmt) if you're editing a `.lua` file, which can be enabled with `set luafmt true`
+- Use [prettier](https://github.com/prettier/prettier) if you're editing a `.md` file, which can be enabled with `set prettier true`
+
+## Git workflow
+First fork the repo, create a branch from `master`, push your changes to your repo, then submit a PR onto `master`.  
+Please don't commit tons of changes in one big commit. Instead, use `git commit -p` to selectively add lines.
 
 ## Adding another formatter:
 - Do NOT add a formatter for an already supported filetype. There must not be dulplicate keys!
