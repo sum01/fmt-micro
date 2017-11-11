@@ -1,4 +1,4 @@
-VERSION = "1.2.1"
+VERSION = "1.3.0"
 
 function get_settings()
   -- Get user settings to use in formatter args
