@@ -7,7 +7,7 @@ Note that this plugin can only run installed/built-in formatters (such as `rustf
 
 |Formatter|Language(s)
 |:---|:---
-|[crystalfmt](https://github.com/crystal-lang/crystal)|`crystal`
+|[crystal tool format](https://github.com/crystal-lang/crystal)|`crystal`
 |[fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)|`fish`
 |[gofmt](https://golang.org/cmd/gofmt/)|`go`
 |[luafmt](https://github.com/trixnz/lua-fmt)|`lua`
