@@ -1,7 +1,5 @@
 VERSION = "1.2.1"
 
--- TODO: Add a command to show the supported filetypes & their respective formatter.
-
 function get_settings()
   -- Get user settings to use in formatter args
   local indent_size = GetOption("tabsize") -- can't be 0
@@ -118,7 +116,7 @@ function list_supported()
 end
 
 function format(cur_view)
-  function get_filetype()
+  local function get_filetype()
     -- What we'll return (assuming all goes well)
     local type = ""
 
