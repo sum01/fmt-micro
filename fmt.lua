@@ -173,7 +173,8 @@ end
 
 function onSave(view)
   local settings = get_settings()
-  if settings["indent_size"] ~= GetOption("tabsize") or settings["is_tabs"] ~= GetOption("tabstospaces") then
+  -- is_tabs uses == because it'll be the opposite of tabstospaces if it's correct
+  if settings["indent_size"] ~= GetOption("tabsize") or settings["is_tabs"] == GetOption("tabstospaces") then
     -- Reload the table (to get new args) if the user has changed their settings since opening Micro
     init_table()
   end
