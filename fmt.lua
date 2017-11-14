@@ -1,7 +1,7 @@
 VERSION = "1.3.0"
 
+-- Get user settings to use in formatter args
 function get_settings()
-  -- Get user settings to use in formatter args
   local indent_size = GetOption("tabsize") -- can't be 0
   local is_tabs = ""
   -- returns a bool
@@ -22,6 +22,7 @@ function get_settings()
   return {["indent_size"] = indent_size, ["is_tabs"] = is_tabs, ["compat_indent_size"] = compat_indent_size}
 end
 
+-- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 function init_table()
   -- Dictionary of commands for easy lookup & manipulation.
   fmt_table = {}
@@ -91,8 +92,8 @@ function init_table()
   )
 end
 
+-- Declares the options to enable/disable formatter(s)
 function create_options()
-  -- Declares the table & options to enable/disable formatter(s)
   -- Avoids manually defining commands twice by reading the table
   for _, value in pairs(fmt_table) do
     -- Creates the options to enable/disable formatters individually
@@ -103,19 +104,19 @@ function create_options()
   end
 end
 
--- Only needs to run on the open of Micro
+-- Initialize the table & options when opening Micro
 function onViewOpen(view)
+  -- Only needs to run on the open of Micro
   if fmt_table == nil then
     init_table()
     create_options()
   end
 end
 
+-- Read the table to get a list of formatters for display
 function list_supported()
   local supported = {}
 
-  -- Declares the table & options to enable/disable formatter(s)
-  -- Avoids manually defining commands twice by reading the table
   for _, value in pairs(fmt_table) do
     -- Don't duplicate inserts, such as "prettier", when they support multiple filetypes.
     -- Credit to https://stackoverflow.com/a/20067270
@@ -132,9 +133,11 @@ function list_supported()
   messenger:Message("fmt's supported formatters: " .. table.concat(supported, ", ") .. ".")
 end
 
+-- Find the correct formatter, its arguments, and then run on the current file
 function format(cur_view)
+  -- Returns the literal file extension when called
   local function get_filetype()
-    -- What we'll return (assuming all goes well)
+    -- What we'll return
     local type = ""
 
     -- Iterates through the path, and captures any letters after a period
@@ -150,6 +153,7 @@ function format(cur_view)
   -- Prevent infinite loop of onSave()
   cur_view:Save(false)
 
+  -- Save filetype for checking
   local file_type = cur_view.Buf:FileType()
 
   -- Returns "Unknown" when Micro can't file the type, so we just grab the extension
@@ -157,7 +161,7 @@ function format(cur_view)
     file_type = get_filetype()
   end
 
-  -- The literal filetype name (`rust`, `shell`, etc.) is the table's key
+  -- The filetype name (`rust`, `shell`, etc.) is the table's key
   -- The literal file extension can be used when Micro can't support the filetype
   -- [1] is the cmd, [2] is args
   local target_fmt = fmt_table[file_type]
