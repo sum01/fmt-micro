@@ -26,7 +26,7 @@ Note that you can also get a list of formatters by running the `fmt` command.
 
 ### Installation
 
-To find your config's path, run `eval messenger:Message(configDir)`.
+To find your config's path, run `eval messenger:Message(configDir)`
 
 1. Open your config's `settings.json`, and add
    `https://raw.githubusercontent.com/sum01/fmt-micro/master/repo.json` to
