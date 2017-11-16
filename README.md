@@ -3,14 +3,14 @@
 This is a multi-language formatting plugin for the
 [Micro text-editor.](https://github.com/zyedidia/micro)
 
-Note that this plugin can only run installed/built-in formatters (such as
-`rustfmt` or `gofmt`).
+This plugin does NOT bundle any formatters, so you must install whichever you
+want to use.
 
 ## Supported formatters
 
 | Formatter                                                                   | Language(s)                                                                                     |
 | :-------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
-| [crystal tool format](https://github.com/crystal-lang/crystal)              | `Crystal`                                                                                       |
+| [crystal](https://github.com/crystal-lang/crystal)                          | `Crystal`                                                                                       |
 | [fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent) | `Fish`                                                                                          |
 | [gofmt](https://golang.org/cmd/gofmt/)                                      | `Go`                                                                                            |
 | [luafmt](https://github.com/trixnz/lua-fmt)                                 | `Lua`                                                                                           |
@@ -26,11 +26,11 @@ Note that you can also get a list of formatters by running the `fmt` command.
 
 ### Installation
 
-1. Open your config's `settings.json` (located in
-   `~/.config/micro/settings.json` on Linux), and add
+To find your config's path, run `eval messenger:Message(configDir)`.
+
+1. Open your config's `settings.json`, and add
    `https://raw.githubusercontent.com/sum01/fmt-micro/master/repo.json` to
    `pluginrepos`, like so:
-
 
 ```json
 "pluginrepos": [
@@ -47,6 +47,11 @@ can skip step 1 of the installation.
 
 ### Usage
 
-The formatter will run on-save (if enabled & exists).\
-The only command is `fmt`, which lists all of the supported formatters.\
-Run `help fmt` after installation to bring up a help file while in Micro.
+The formatter will run on-save, unless `fmt-onsave` is false.
+
+**Commands:**
+
+* `fmt` to run the formatter on the current file.
+* `fmt list` to output the supported formatters to Micro's log.
+
+Run `help fmt` to bring up a help file while in Micro.
