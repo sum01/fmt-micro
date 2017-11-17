@@ -110,11 +110,12 @@ local function init_table()
   insert({"c", "c++", "objective-c"}, "clang-format", "-i")
 
   -- Keep the more annoying args in a table
-  local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space"}
+  local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space", ["pug-beautifier"] = nil}
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if uses_tabs == "true" then
     unruly_args["htmlbeautifier"] = "-T"
     unruly_args["coffee-fmt"] = "tab"
+    unruly_args["pug-beautifier"] = "-t " .. indent
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
@@ -123,6 +124,7 @@ local function init_table()
     "coffee-fmt",
     "--indent_style " .. unruly_args["coffee-fmt"] .. " --indent_size " .. indent .. " -i"
   )
+  insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
 end
 
 -- Declares the options to enable/disable formatter(s)

@@ -19,6 +19,7 @@ want to use.
 | [goimports], [gofmt] | `Go`                                                                                            |
 | [htmlbeautifier]     | `HTML`                                                                                          |
 | [luafmt]             | `Lua`                                                                                           |
+| [pug-beautifier-cli] | `Pug`                                                                                           |
 | [rubocop]            | `Ruby`                                                                                          |
 | [rustfmt]            | `Rust`                                                                                          |
 | [shfmt]              | `Shell`                                                                                         |
@@ -73,6 +74,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [goimports]: https://godoc.org/golang.org/x/tools/cmd/goimports
 [htmlbeautifier]: https://github.com/threedaymonk/htmlbeautifier
 [luafmt]: https://github.com/trixnz/lua-fmt
+[pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
 [rubocop]: https://github.com/bbatsov/rubocop
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
 [shfmt]: https://github.com/mvdan/sh
