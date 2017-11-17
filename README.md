@@ -10,6 +10,7 @@ want to use.
 
 | Formatter                | Language(s)                                                                                     |
 | :----------------------- | :---------------------------------------------------------------------------------------------- |
+| [cljfmt]                 | `Clojure`                                                                                       |
 | [coffee-fmt]             | `CoffeeScript`                                                                                  |
 | [crystal]                | `Crystal`                                                                                       |
 | [fish_indent]            | `Fish`                                                                                          |
@@ -60,6 +61,7 @@ Run `help fmt` to bring up a help file while in Micro.
 
 <!-- Table links to make the table easier to read in source -->
 
+[cljfmt]: https://github.com/snoe/node-cljfmt
 [coffee-fmt]: https://github.com/sterpe/coffee-fmt
 [crystal]: https://github.com/crystal-lang/crystal
 [fish_indent]: https://fishshell.com/docs/current/commands.html#fish_indent

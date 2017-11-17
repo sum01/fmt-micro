@@ -116,6 +116,7 @@ local function init_table()
 
   insert("html", "htmlbeautifier", htmlbeautifier_arg)
   insert("coffeescript", "coffee-fmt", "--indent_style " .. coffeefmt_arg .. " --indent_size " .. indent .. " -i")
+  insert("clojure", "cljfmt")
 end
 
 -- Declares the options to enable/disable formatter(s)
