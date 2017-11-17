@@ -8,24 +8,24 @@ want to use.
 
 ## Supported formatters
 
-| Formatter                | Language(s)                                                                                     |
-| :----------------------- | :---------------------------------------------------------------------------------------------- |
-| [clang-format]           | `C`, `C++`, `C#`                                                                                |
-| [cljfmt]                 | `Clojure`                                                                                       |
-| [coffee-fmt]             | `CoffeeScript`                                                                                  |
-| [crystal]                | `Crystal`                                                                                       |
-| [elm-format]             | `Elm`                                                                                           |
-| [fish_indent]            | `Fish`                                                                                          |
-| **[goimports]**, [gofmt] | `Go`                                                                                            |
-| [htmlbeautifier]         | `HTML`                                                                                          |
-| [luafmt]                 | `Lua`                                                                                           |
-| [rubocop]                | `Ruby`                                                                                          |
-| [rustfmt]                | `Rust`                                                                                          |
-| [shfmt]                  | `Shell`                                                                                         |
-| [php-cs-fixer]           | `PHP`                                                                                           |
-| [prettier]               | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
-| [uncrustify]             | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
-| [yapf]                   | `Python`                                                                                        |
+| Formatter            | Language(s)                                                                                     |
+| :------------------- | :---------------------------------------------------------------------------------------------- |
+| [clang-format]       | `C`, `C++`, `C#`                                                                                |
+| [cljfmt]             | `Clojure`                                                                                       |
+| [coffee-fmt]         | `CoffeeScript`                                                                                  |
+| [crystal]            | `Crystal`                                                                                       |
+| [elm-format]         | `Elm`                                                                                           |
+| [fish_indent]        | `Fish`                                                                                          |
+| [goimports], [gofmt] | `Go`                                                                                            |
+| [htmlbeautifier]     | `HTML`                                                                                          |
+| [luafmt]             | `Lua`                                                                                           |
+| [rubocop]            | `Ruby`                                                                                          |
+| [rustfmt]            | `Rust`                                                                                          |
+| [shfmt]              | `Shell`                                                                                         |
+| [php-cs-fixer]       | `PHP`                                                                                           |
+| [prettier]           | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
+| [uncrustify]         | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
+| [yapf]               | `Python`                                                                                        |
 
 Note that you can also get a list of formatters by running the `fmt` command.
 
