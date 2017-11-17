@@ -18,6 +18,7 @@ want to use.
 | [fish_indent]        | `Fish`                                                                                          |
 | [goimports], [gofmt] | `Go`                                                                                            |
 | [htmlbeautifier]     | `HTML`                                                                                          |
+| [latexindent.pl]     | `LaTeX`                                                                                         |
 | [luafmt]             | `Lua`                                                                                           |
 | [pug-beautifier-cli] | `Pug`                                                                                           |
 | [rubocop]            | `Ruby`                                                                                          |
@@ -73,6 +74,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [gofmt]: https://golang.org/cmd/gofmt/
 [goimports]: https://godoc.org/golang.org/x/tools/cmd/goimports
 [htmlbeautifier]: https://github.com/threedaymonk/htmlbeautifier
+[latexindent.pl]: https://github.com/cmhughes/latexindent.pl
 [luafmt]: https://github.com/trixnz/lua-fmt
 [pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
 [rubocop]: https://github.com/bbatsov/rubocop

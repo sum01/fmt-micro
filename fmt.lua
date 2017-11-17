@@ -108,6 +108,8 @@ local function init_table()
   -- No args from what I've found | This might need "--yes" after the filepath, unsure
   insert("elm", "elm-format", "--yes")
   insert({"c", "c++", "objective-c"}, "clang-format", "-i")
+  -- LaTeX
+  insert("tex", "latexindent.pl", "-w")
 
   -- Keep the more annoying args in a table
   local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space", ["pug-beautifier"] = nil}
