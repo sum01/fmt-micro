@@ -21,6 +21,7 @@ want to use.
 | [htmlbeautifier]     | `HTML`                                                                                          |
 | [latexindent.pl]     | `LaTeX`                                                                                         |
 | [luafmt]             | `Lua`                                                                                           |
+| [marko-prettyprint]  | `Marko`                                                                                         |
 | [pug-beautifier-cli] | `Pug`                                                                                           |
 | [rubocop]            | `Ruby`                                                                                          |
 | [rustfmt]            | `Rust`                                                                                          |
@@ -78,6 +79,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [htmlbeautifier]: https://github.com/threedaymonk/htmlbeautifier
 [latexindent.pl]: https://github.com/cmhughes/latexindent.pl
 [luafmt]: https://github.com/trixnz/lua-fmt
+[marko-prettyprint]: https://github.com/marko-js/marko-prettyprint
 [pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
 [rubocop]: https://github.com/bbatsov/rubocop
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
