@@ -107,12 +107,15 @@ local function init_table()
   -- If a change is made to insert() then we don't worry about any duplicated calls...
   -- since we're just using vars for the args that change
   local htmlbeautifier_arg = "-t " .. indent
+  local coffeefmt_arg = "space"
 
   if uses_tabs == "true" then
     htmlbeautifier_arg = "-T"
+    coffeefmt_arg = "tab"
   end
 
   insert("html", "htmlbeautifier", htmlbeautifier_arg)
+  insert("coffeescript", "coffee-fmt", "--indent_style " .. coffeefmt_arg .. " --indent_size " .. indent .. " -i")
 end
 
 -- Declares the options to enable/disable formatter(s)
