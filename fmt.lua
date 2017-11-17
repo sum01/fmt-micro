@@ -103,6 +103,11 @@ local function init_table()
     "uncrustify",
     "-c " .. JoinPaths(conf_path, "uncrustify") .. " --no-backup"
   )
+  -- Options only available via a config file
+  insert("clojure", "cljfmt")
+  -- No args from what I've found | This might need "--yes" after the filepath, unsure
+  insert("elm", "elm-format", "--yes")
+  insert({"c", "c++", "objective-c"}, "clang-format", "-i")
 
   -- Keep the more annoying args in a table
   local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space"}
@@ -118,10 +123,6 @@ local function init_table()
     "coffee-fmt",
     "--indent_style " .. unruly_args["coffee-fmt"] .. " --indent_size " .. indent .. " -i"
   )
-  -- Options only available via a config file
-  insert("clojure", "cljfmt")
-  -- No args from what I've found | This might need "--yes" after the filepath, unsure
-  insert("elm", "elm-format", "--yes")
 end
 
 -- Declares the options to enable/disable formatter(s)

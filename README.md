@@ -10,6 +10,7 @@ want to use.
 
 | Formatter                | Language(s)                                                                                     |
 | :----------------------- | :---------------------------------------------------------------------------------------------- |
+| [clang-format]           | `C`, `C++`, `C#`                                                                                |
 | [cljfmt]                 | `Clojure`                                                                                       |
 | [coffee-fmt]             | `CoffeeScript`                                                                                  |
 | [crystal]                | `Crystal`                                                                                       |
@@ -62,6 +63,7 @@ Run `help fmt` to bring up a help file while in Micro.
 
 <!-- Table links to make the table easier to read in source -->
 
+[clang-format]: https://clang.llvm.org/docs/ClangFormat.html
 [cljfmt]: https://github.com/snoe/node-cljfmt
 [coffee-fmt]: https://github.com/sterpe/coffee-fmt
 [crystal]: https://github.com/crystal-lang/crystal
