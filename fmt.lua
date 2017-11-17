@@ -110,6 +110,9 @@ local function init_table()
   insert({"c", "c++", "objective-c"}, "clang-format", "-i")
   -- LaTeX
   insert("tex", "latexindent.pl", "-w")
+  -- Unsure of the exact purpose of -t, but it's recommended when used as a tool
+  -- https://github.com/csscomb/csscomb.js/blob/dev/doc/usage-cli.md#options
+  insert("css", "csscomb", "-t")
 
   -- Keep the more annoying args in a table
   local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space", ["pug-beautifier"] = nil}
