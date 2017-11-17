@@ -8,19 +8,19 @@ want to use.
 
 ## Supported formatters
 
-| Formatter                                                                   | Language(s)                                                                                     |
-| :-------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
-| [crystal](https://github.com/crystal-lang/crystal)                          | `Crystal`                                                                                       |
-| [fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent) | `Fish`                                                                                          |
-| [gofmt](https://golang.org/cmd/gofmt/)                                      | `Go`                                                                                            |
-| [luafmt](https://github.com/trixnz/lua-fmt)                                 | `Lua`                                                                                           |
-| [rubocop](https://github.com/bbatsov/rubocop)                               | `Ruby`                                                                                          |
-| [rustfmt](https://github.com/rust-lang-nursery/rustfmt)                     | `Rust`                                                                                          |
-| [shfmt](https://github.com/mvdan/sh)                                        | `Shell`                                                                                         |
-| [php-cs-fixer](https://github.com/friendsofphp/PHP-CS-Fixer)                | `PHP`                                                                                           |
-| [prettier](https://github.com/prettier/prettier)                            | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
-| [uncrustify](https://github.com/uncrustify/uncrustify)                      | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
-| [yapf](https://github.com/google/yapf)                                      | `Python`                                                                                        |
+| Formatter                                                                                                   | Language(s)                                                                                     |
+| :---------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
+| [crystal](https://github.com/crystal-lang/crystal)                                                          | `Crystal`                                                                                       |
+| [fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)                                 | `Fish`                                                                                          |
+| **[goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)**, [gofmt](https://golang.org/cmd/gofmt/) | `Go`                                                                                            |
+| [luafmt](https://github.com/trixnz/lua-fmt)                                                                 | `Lua`                                                                                           |
+| [rubocop](https://github.com/bbatsov/rubocop)                                                               | `Ruby`                                                                                          |
+| [rustfmt](https://github.com/rust-lang-nursery/rustfmt)                                                     | `Rust`                                                                                          |
+| [shfmt](https://github.com/mvdan/sh)                                                                        | `Shell`                                                                                         |
+| [php-cs-fixer](https://github.com/friendsofphp/PHP-CS-Fixer)                                                | `PHP`                                                                                           |
+| [prettier](https://github.com/prettier/prettier)                                                            | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
+| [uncrustify](https://github.com/uncrustify/uncrustify)                                                      | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
+| [yapf](https://github.com/google/yapf)                                                                      | `Python`                                                                                        |
 
 Note that you can also get a list of formatters by running the `fmt` command.
 

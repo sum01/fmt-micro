@@ -80,6 +80,7 @@ local function init_table()
   insert("ruby", "rubocop", "-f quiet -o")
   -- Doesn't have any configurable args, and forces tabs.
   insert("go", "gofmt", "-s -w")
+  insert("go", "goimports", "-w")
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
   insert("lua", "luafmt", "-i " .. indent .. " -w replace")
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
