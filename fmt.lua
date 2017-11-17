@@ -103,6 +103,16 @@ local function init_table()
     "uncrustify",
     "-c " .. JoinPaths(conf_path, "uncrustify") .. " --no-backup"
   )
+
+  -- If a change is made to insert() then we don't worry about any duplicated calls...
+  -- since we're just using vars for the args that change
+  local htmlbeautifier_arg = "-t " .. indent
+
+  if uses_tabs == "true" then
+    htmlbeautifier_arg = "-T"
+  end
+
+  insert("html", "htmlbeautifier", htmlbeautifier_arg)
 end
 
 -- Declares the options to enable/disable formatter(s)

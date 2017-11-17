@@ -13,6 +13,7 @@ want to use.
 | [crystal](https://github.com/crystal-lang/crystal)                                                          | `Crystal`                                                                                       |
 | [fish_indent](https://fishshell.com/docs/current/commands.html#fish_indent)                                 | `Fish`                                                                                          |
 | **[goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)**, [gofmt](https://golang.org/cmd/gofmt/) | `Go`                                                                                            |
+| [htmlbeautifier](https://github.com/threedaymonk/htmlbeautifier)                                            | `HTML`                                                                                          |
 | [luafmt](https://github.com/trixnz/lua-fmt)                                                                 | `Lua`                                                                                           |
 | [rubocop](https://github.com/bbatsov/rubocop)                                                               | `Ruby`                                                                                          |
 | [rustfmt](https://github.com/rust-lang-nursery/rustfmt)                                                     | `Rust`                                                                                          |
