@@ -13,6 +13,7 @@ want to use.
 | [cljfmt]                 | `Clojure`                                                                                       |
 | [coffee-fmt]             | `CoffeeScript`                                                                                  |
 | [crystal]                | `Crystal`                                                                                       |
+| [elm-format]             | `Elm`                                                                                           |
 | [fish_indent]            | `Fish`                                                                                          |
 | **[goimports]**, [gofmt] | `Go`                                                                                            |
 | [htmlbeautifier]         | `HTML`                                                                                          |
@@ -64,6 +65,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [cljfmt]: https://github.com/snoe/node-cljfmt
 [coffee-fmt]: https://github.com/sterpe/coffee-fmt
 [crystal]: https://github.com/crystal-lang/crystal
+[elm-format]: https://github.com/avh4/elm-format
 [fish_indent]: https://fishshell.com/docs/current/commands.html#fish_indent
 [gofmt]: https://golang.org/cmd/gofmt/
 [goimports]: https://godoc.org/golang.org/x/tools/cmd/goimports
