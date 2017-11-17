@@ -104,18 +104,20 @@ local function init_table()
     "-c " .. JoinPaths(conf_path, "uncrustify") .. " --no-backup"
   )
 
-  -- If a change is made to insert() then we don't worry about any duplicated calls...
-  -- since we're just using vars for the args that change
-  local htmlbeautifier_arg = "-t " .. indent
-  local coffeefmt_arg = "space"
-
+  -- Keep the more annoying args in a table
+  local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space"}
+  -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if uses_tabs == "true" then
-    htmlbeautifier_arg = "-T"
-    coffeefmt_arg = "tab"
+    unruly_args["htmlbeautifier"] = "-T"
+    unruly_args["coffee-fmt"] = "tab"
   end
 
-  insert("html", "htmlbeautifier", htmlbeautifier_arg)
-  insert("coffeescript", "coffee-fmt", "--indent_style " .. coffeefmt_arg .. " --indent_size " .. indent .. " -i")
+  insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
+  insert(
+    "coffeescript",
+    "coffee-fmt",
+    "--indent_style " .. unruly_args["coffee-fmt"] .. " --indent_size " .. indent .. " -i"
+  )
   insert("clojure", "cljfmt")
 end
 
