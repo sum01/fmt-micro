@@ -22,6 +22,7 @@ want to use.
 | [latexindent.pl]     | `LaTeX`                                                                                         |
 | [luafmt]             | `Lua`                                                                                           |
 | [marko-prettyprint]  | `Marko`                                                                                         |
+| [ocp-indent]         | `OCaml`                                                                                         |
 | [pug-beautifier-cli] | `Pug`                                                                                           |
 | [rubocop]            | `Ruby`                                                                                          |
 | [rustfmt]            | `Rust`                                                                                          |
@@ -80,6 +81,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [latexindent.pl]: https://github.com/cmhughes/latexindent.pl
 [luafmt]: https://github.com/trixnz/lua-fmt
 [marko-prettyprint]: https://github.com/marko-js/marko-prettyprint
+[ocp-indent]: https://www.typerex.org/ocp-indent.html
 [pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
 [rubocop]: https://github.com/bbatsov/rubocop
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt

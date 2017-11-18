@@ -115,6 +115,7 @@ local function init_table()
   insert("css", "csscomb", "-t")
   -- Seems to have some config options, but the ones we want aren't documented
   insert("marko", "marko-prettyprint")
+  insert("ocaml", "ocp-indent")
 
   -- Keep the more annoying args in a table
   local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space", ["pug-beautifier"] = nil}
