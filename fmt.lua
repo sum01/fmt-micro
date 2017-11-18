@@ -49,6 +49,15 @@ local function init_table()
         insert(val, fmt, args)
       end
     else
+      -- Just lets us not have to brace single/no-command formatters when doing insert()
+      -- aka less cruft
+      if type(args) ~= "table" then
+        args = {args}
+      end
+      -- Actually insert the table into the table in the format shown:
+      -- fmt_table[1] = filetype
+      -- fmt_table[2] = formatter_cmd
+      -- fmt_table[3] = {args}
       table.insert(fmt_table, {filetype, fmt, args})
     end
   end
@@ -74,23 +83,23 @@ local function init_table()
 
   -- The literal file extension can be used when Micro can't support the filetype
 
-  insert("crystal", "crystal", "tool format")
+  insert("crystal", "crystal", {"tool", "format"})
   insert("fish", "fish_indent", "-w")
   -- Maybe switch to https://github.com/ruby-formatter/rufo
-  insert("ruby", "rubocop", "-f quiet -o")
+  insert("ruby", "rubocop", {"-f quiet", "-o"})
   -- Doesn't have any configurable args, and forces tabs.
-  insert("go", "gofmt", "-s -w")
+  insert("go", "gofmt", {"-s", "-w"})
   insert("go", "goimports", "-w")
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", "-i " .. indent .. " -w replace")
+  insert("lua", "luafmt", {"-i " .. indent, "-w replace"})
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
   insert(
     {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
     "prettier",
-    "--use-tabs " .. uses_tabs .. " --tab-width " .. indent .. " --write"
+    {"--use-tabs " .. uses_tabs, "--tab-width " .. indent, "--write"}
   )
   -- 0 signifies tabs, so we use compat
-  insert("shell", "shfmt", "-i " .. compat_indent .. " -s -w")
+  insert("shell", "shfmt", {"-i " .. compat_indent, "-s", "-w"})
   -- overwrite is default, and we can't pass config options
   insert("rust", "rustfmt")
   -- Doesn't support configurable args for tabs/spaces
@@ -101,7 +110,7 @@ local function init_table()
   insert(
     {"c", "c++", "csharp", "objective-c", "d", "java", "p", "vala"},
     "uncrustify",
-    "-c " .. JoinPaths(conf_path, "uncrustify") .. " --no-backup"
+    {"-c " .. JoinPaths(conf_path, "uncrustify"), "--no-backup"}
   )
   -- Options only available via a config file
   insert("clojure", "cljfmt")
@@ -117,11 +126,11 @@ local function init_table()
   insert("marko", "marko-prettyprint")
   insert("ocaml", "ocp-indent")
   -- Overwrite is default if only source (-s) used
-  insert("yaml", "align", "-p " .. indent .. " -s")
+  insert("yaml", "align", {"-p " .. indent, "-s"})
   insert("haskell", "stylish-haskell", "-i")
   insert("puppet", "puppet-lint", "--fix")
   -- The -a arg can be used multiple times to increase aggresiveness. Unsure of what people prefer, so doing 1.
-  insert("python", "autopep8", "-a -i")
+  insert("python", "autopep8", {"-a", "-i"})
 
   -- Keep the more annoying args in a table
   local unruly_args = {
@@ -144,11 +153,11 @@ local function init_table()
   insert(
     "coffeescript",
     "coffee-fmt",
-    "--indent_style " .. unruly_args["coffee-fmt"] .. " --indent_size " .. indent .. " -i"
+    {"--indent_style " .. unruly_args["coffee-fmt"], "--indent_size " .. indent, "-i"}
   )
   insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
   insert("perl", "perltidy", unruly_args["perltidy"])
-  insert("javascript", "js-beautify", unruly_args["js-beautify"] .. " -r -f")
+  insert("javascript", "js-beautify", {unruly_args["js-beautify"], "-r", "-f"})
 end
 
 -- Declares the options to enable/disable formatter(s)
@@ -342,13 +351,15 @@ local function format()
   -- Only do anything if the filetype has is a supported formatter
   if target_fmt ~= nil then
     local command = target_fmt[2]
+    local file = CurView().Buf.Path
 
-    -- Check for args
-    if target_fmt[3] ~= nil then
-      command = command .. " " .. target_fmt[3]
+    -- Check for args (index 3 is a table of args)
+    -- ipairs will stop after hitting nil so we don't waste time looping
+    for _, value in ipairs(target_fmt[3]) do
+      command = command .. " " .. value
     end
 
-    command = command .. " " .. CurView().Buf.Path
+    command = command .. " " .. file
     -- Inform the user of exactly what will be ran
     messenger:AddLog('fmt: Running "' .. command .. '"')
     -- Actually run the formatter via Micro's "safe" JobSpawn
