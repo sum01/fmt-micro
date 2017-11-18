@@ -119,6 +119,7 @@ local function init_table()
   -- Overwrite is default if only source (-s) used
   insert("yaml", "align", "-p " .. indent .. " -s")
   insert("haskell", "stylish-haskell", "-i")
+  insert("puppet", "puppet-lint", "--fix")
 
   -- Keep the more annoying args in a table
   local unruly_args = {

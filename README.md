@@ -32,6 +32,7 @@ want to use.
 | [stylish-haskell]    | `Haskell`                                                                                       |
 | [php-cs-fixer]       | `PHP`                                                                                           |
 | [prettier]           | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
+| [puppet-lint]        | `Puppet`                                                                                        |
 | [uncrustify]         | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
 | [yapf]               | `Python`                                                                                        |
 
@@ -94,5 +95,6 @@ Run `help fmt` to bring up a help file while in Micro.
 [stylish-haskell]: https://github.com/jaspervdj/stylish-haskell
 [php-cs-fixer]: https://github.com/friendsofphp/PHP-CS-Fixer
 [prettier]: https://github.com/prettier/prettier
+[puppet-lint]: http://puppet-lint.com/
 [uncrustify]: https://github.com/uncrustify/uncrustify
 [yapf]: https://github.com/google/yapf
