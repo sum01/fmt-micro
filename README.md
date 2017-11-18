@@ -12,7 +12,7 @@ want to use.
 | :------------------- | :---------------------------------------------------------------------------------------------- |
 | [align-yaml]         | `YAML`                                                                                          |
 | [autopep8]           | `Python`                                                                                        |
-| [clang-format]       | `C`, `C++`, `C#`                                                                                |
+| [clang-format]       | `C`, `C++`, `Objective-C`                                                                       |
 | [cljfmt]             | `Clojure`                                                                                       |
 | [coffee-fmt]         | `CoffeeScript`                                                                                  |
 | [crystal]            | `Crystal`                                                                                       |

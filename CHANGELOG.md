@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.0] - 2017-11-18
+
 ### Added
 
 * The ability to have duplicate supported languages from formatters, which makes
@@ -22,7 +24,7 @@ and this project adheres to
 * `coffee-fmt` formatter for `CoffeeScript` support
 * `cljfmt` formatter for `Clojure` support
 * `elm-format` formatter for `Elm` support
-* `clang-format` formatter for alternative `C`, `C++`, and `C#` support
+* `clang-format` formatter for alternative `C`, `C++`, and `Objective-C` support
 * `pug-beautifier-cli` formatter for `Pug` (previously `Jade`) support
 * `latexindent.pl` formatter for `LaTeX` support
 * `CSScomb` formatter for alternative `CSS` support
@@ -123,7 +125,8 @@ and this project adheres to
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v1.3.0...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/sum01/fmt-micro/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/sum01/fmt-micro/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/sum01/fmt-micro/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/sum01/fmt-micro/compare/v1.1.1...v1.2.0
