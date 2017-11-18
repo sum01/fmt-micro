@@ -22,7 +22,7 @@ and this project adheres to
 * `coffee-fmt` formatter for `CoffeeScript` support
 * `cljfmt` formatter for `Clojure` support
 * `elm-format` formatter for `Elm` support
-* `clang-format` formatter for alternative `C`, `C++`, and `C#` support
+* `clang-format` formatter for alternative `C`, `C++`, and `Objective-C` support
 * `pug-beautifier-cli` formatter for `Pug` (previously `Jade`) support
 * `latexindent.pl` formatter for `LaTeX` support
 * `CSScomb` formatter for alternative `CSS` support
