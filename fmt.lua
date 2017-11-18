@@ -244,7 +244,7 @@ local function list_supported()
   end
 
   -- Output the formatters supported to the log, seperated by newlines
-  -- 1 is the length of "  Formatter"
+  -- 11 is the length of "  Formatter"
   pad_len = max_pad_len - 11
   pad_string = get_padding(pad_len, " ")
   local table_top = "|  Formatter" .. pad_string .. "| Status |\n"
@@ -276,7 +276,8 @@ end
 
 function onExit()
   -- Refresh the CurView after the command finishes
-  CurView():ReOpen()
+  -- I've found .Buf:ReOpen() to be more smooth than just :ReOpen(), at least on crap machines
+  CurView().Buf:ReOpen()
 end
 
 function onStderr(err)
