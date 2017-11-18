@@ -341,15 +341,14 @@ local function format()
 
   -- Only do anything if the filetype has is a supported formatter
   if target_fmt ~= nil then
-    local file = CurView().Buf.Path
-    local args = ""
+    local command = target_fmt[2]
 
     -- Check for args
     if target_fmt[3] ~= nil then
-      args = target_fmt[3]
+      command = command .. " " .. target_fmt[3]
     end
 
-    local command = target_fmt[2] .. " " .. args .. " " .. file
+    command = command .. " " .. CurView().Buf.Path
     -- Inform the user of exactly what will be ran
     messenger:AddLog('fmt: Running "' .. command .. '"')
     -- Actually run the formatter via Micro's "safe" JobSpawn
