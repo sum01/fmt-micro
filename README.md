@@ -11,6 +11,7 @@ want to use.
 | Formatter            | Language(s)                                                                                     |
 | :------------------- | :---------------------------------------------------------------------------------------------- |
 | [align-yaml]         | `YAML`                                                                                          |
+| [autopep8]           | `Python`                                                                                        |
 | [clang-format]       | `C`, `C++`, `C#`                                                                                |
 | [cljfmt]             | `Clojure`                                                                                       |
 | [coffee-fmt]         | `CoffeeScript`                                                                                  |
@@ -74,6 +75,7 @@ Run `help fmt` to bring up a help file while in Micro.
 <!-- Table links to make the table easier to read in source -->
 
 [align-yaml]: https://github.com/jonschlinkert/align-yaml
+[autopep8]: https://github.com/hhatto/autopep8
 [clang-format]: https://clang.llvm.org/docs/ClangFormat.html
 [cljfmt]: https://github.com/snoe/node-cljfmt
 [coffee-fmt]: https://github.com/sterpe/coffee-fmt

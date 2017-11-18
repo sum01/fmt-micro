@@ -120,6 +120,8 @@ local function init_table()
   insert("yaml", "align", "-p " .. indent .. " -s")
   insert("haskell", "stylish-haskell", "-i")
   insert("puppet", "puppet-lint", "--fix")
+  -- The -a arg can be used multiple times to increase aggresiveness. Unsure of what people prefer, so doing 1.
+  insert("python", "autopep8", "-a -i")
 
   -- Keep the more annoying args in a table
   local unruly_args = {
