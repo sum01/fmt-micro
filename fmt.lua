@@ -116,6 +116,8 @@ local function init_table()
   -- Seems to have some config options, but the ones we want aren't documented
   insert("marko", "marko-prettyprint")
   insert("ocaml", "ocp-indent")
+  -- Overwrite is default if only source (-s) used
+  insert("yaml", "align", "-p " .. indent .. " -s")
 
   -- Keep the more annoying args in a table
   local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space", ["pug-beautifier"] = nil}
