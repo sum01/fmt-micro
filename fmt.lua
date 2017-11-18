@@ -363,8 +363,20 @@ local function format()
     command = command .. " " .. file
     -- Inform the user of exactly what will be ran
     messenger:AddLog('fmt: Running "' .. command .. '"')
-    -- Actually run the formatter via Micro's "safe" JobSpawn
-    JobStart(command, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
+
+    -- Actually run the formatter
+    if OS == "windows" then
+      -- Both JobSpawn and JobStart don't work on Windows (in my tests), but this does...
+      -- FIXME: if/when Micro fixes Windows support, remove this io.popen stuff
+      local proc = io.popen(command)
+      local proc_out = proc:read("*a")
+      proc:close()
+      onExit()
+      onStdout(proc_out)
+    else
+      -- Micro-specific process runner
+      JobStart(command, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
+    end
   end
 end
 
