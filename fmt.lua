@@ -120,12 +120,18 @@ local function init_table()
   insert("yaml", "align", "-p " .. indent .. " -s")
 
   -- Keep the more annoying args in a table
-  local unruly_args = {["htmlbeautifier"] = "-t " .. indent, ["coffee-fmt"] = "space", ["pug-beautifier"] = nil}
+  local unruly_args = {
+    ["htmlbeautifier"] = "-t " .. indent,
+    ["coffee-fmt"] = "space",
+    ["pug-beautifier"] = nil,
+    ["perltidy"] = "-i=" .. indent
+  }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if uses_tabs == "true" then
     unruly_args["htmlbeautifier"] = "-T"
     unruly_args["coffee-fmt"] = "tab"
     unruly_args["pug-beautifier"] = "-t " .. indent
+    unruly_args["perltidy"] = "-et=" .. indent
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
@@ -135,6 +141,7 @@ local function init_table()
     "--indent_style " .. unruly_args["coffee-fmt"] .. " --indent_size " .. indent .. " -i"
   )
   insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
+  insert("perl", "perltidy", unruly_args["perltidy"])
 end
 
 -- Declares the options to enable/disable formatter(s)

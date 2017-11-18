@@ -24,6 +24,7 @@ want to use.
 | [luafmt]             | `Lua`                                                                                           |
 | [marko-prettyprint]  | `Marko`                                                                                         |
 | [ocp-indent]         | `OCaml`                                                                                         |
+| [perltidy]           | `Perl`                                                                                          |
 | [pug-beautifier-cli] | `Pug`                                                                                           |
 | [rubocop]            | `Ruby`                                                                                          |
 | [rustfmt]            | `Rust`                                                                                          |
@@ -84,6 +85,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [luafmt]: https://github.com/trixnz/lua-fmt
 [marko-prettyprint]: https://github.com/marko-js/marko-prettyprint
 [ocp-indent]: https://www.typerex.org/ocp-indent.html
+[perltidy]: http://perltidy.sourceforge.net/
 [pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
 [rubocop]: https://github.com/bbatsov/rubocop
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
