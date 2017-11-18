@@ -3,12 +3,12 @@
 To manually run formatting on the current file, use the `fmt` command. You can
 also just save the file, assuming you have `fmt-onsave` set to true.
 
-To get a list of supported formatters, run the `fmt list` command, or read the
-`README.md`. A table of formatters will be printed to Micro's log.
+To get a list of supported formatters, run the `fmt list` command. A table of
+supported formatters will be printed to Micro's log.
 
 To enable the individual formatters, run `set FormatterName true`.\
 When saving a supported file-type, the plugin will automatically run on the file
-& save any changes.
+& save any changes, unless you set `fmt-onsave` to false.
 
 Please note that all formatters are disabled by default, as to not accidentally
 format your files. You must enable them individually for this plugin to do

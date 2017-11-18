@@ -24,7 +24,7 @@ to selectively add lines.
 
 * Be careful with spaces when using `insert()` to add the formatter. Spaces get
   added between the command & args, and between args & the file.
-* Using insert: `insert("filetype", "formattercommand", "args")`
+* Using insert: `insert("filetype", "formattercommand", {"args1", "arg2"})`
   * `filetype` should be from `CurView().Buf:FileType()`
     * If 2+ filetype's are supported, add them as a table (see how `prettier`
       was done).
@@ -34,6 +34,7 @@ to selectively add lines.
   * `formattercommand` is the literal command to run the formatter
   * `args` can be left empty, like `insert("filetype", "formattercommand")` if
     there aren't any, or at least any relevant ones.
+    * If multiple are needed, add them as a table, like above.
 * PS: Alphabetical order doesn't matter in relation to the order of `insert()`
   commands. The `fmt list` command has a sort in it.
 
