@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.0] - 2017-11-18
+
 ### Added
 
 * The ability to have duplicate supported languages from formatters, which makes
@@ -123,7 +125,8 @@ and this project adheres to
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v1.3.0...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/sum01/fmt-micro/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/sum01/fmt-micro/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/sum01/fmt-micro/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/sum01/fmt-micro/compare/v1.1.1...v1.2.0
