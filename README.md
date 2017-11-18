@@ -29,6 +29,7 @@ want to use.
 | [rubocop]            | `Ruby`                                                                                          |
 | [rustfmt]            | `Rust`                                                                                          |
 | [shfmt]              | `Shell`                                                                                         |
+| [stylish-haskell]    | `Haskell`                                                                                       |
 | [php-cs-fixer]       | `PHP`                                                                                           |
 | [prettier]           | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
 | [uncrustify]         | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
@@ -90,6 +91,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [rubocop]: https://github.com/bbatsov/rubocop
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
 [shfmt]: https://github.com/mvdan/sh
+[stylish-haskell]: https://github.com/jaspervdj/stylish-haskell
 [php-cs-fixer]: https://github.com/friendsofphp/PHP-CS-Fixer
 [prettier]: https://github.com/prettier/prettier
 [uncrustify]: https://github.com/uncrustify/uncrustify

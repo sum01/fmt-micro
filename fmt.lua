@@ -118,6 +118,7 @@ local function init_table()
   insert("ocaml", "ocp-indent")
   -- Overwrite is default if only source (-s) used
   insert("yaml", "align", "-p " .. indent .. " -s")
+  insert("haskell", "stylish-haskell", "-i")
 
   -- Keep the more annoying args in a table
   local unruly_args = {
