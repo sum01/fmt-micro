@@ -20,6 +20,7 @@ want to use.
 | [fish_indent]        | `Fish`                                                                                          |
 | [goimports], [gofmt] | `Go`                                                                                            |
 | [htmlbeautifier]     | `HTML`                                                                                          |
+| [js-beautify]        | `Javascript`                                                                                    |
 | [latexindent.pl]     | `LaTeX`                                                                                         |
 | [luafmt]             | `Lua`                                                                                           |
 | [marko-prettyprint]  | `Marko`                                                                                         |
@@ -83,6 +84,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [gofmt]: https://golang.org/cmd/gofmt/
 [goimports]: https://godoc.org/golang.org/x/tools/cmd/goimports
 [htmlbeautifier]: https://github.com/threedaymonk/htmlbeautifier
+[js-beautify]: https://github.com/beautify-web/js-beautify
 [latexindent.pl]: https://github.com/cmhughes/latexindent.pl
 [luafmt]: https://github.com/trixnz/lua-fmt
 [marko-prettyprint]: https://github.com/marko-js/marko-prettyprint

@@ -126,7 +126,8 @@ local function init_table()
     ["htmlbeautifier"] = "-t " .. indent,
     ["coffee-fmt"] = "space",
     ["pug-beautifier"] = nil,
-    ["perltidy"] = "-i=" .. indent
+    ["perltidy"] = "-i=" .. indent,
+    ["js-beautify"] = "-s " .. indent
   }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if uses_tabs == "true" then
@@ -134,6 +135,7 @@ local function init_table()
     unruly_args["coffee-fmt"] = "tab"
     unruly_args["pug-beautifier"] = "-t " .. indent
     unruly_args["perltidy"] = "-et=" .. indent
+    unruly_args["js-beautify"] = "-t"
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
@@ -144,6 +146,7 @@ local function init_table()
   )
   insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
   insert("perl", "perltidy", unruly_args["perltidy"])
+  insert("javascript", "js-beautify", unruly_args["js-beautify"] .. " -r -f")
 end
 
 -- Declares the options to enable/disable formatter(s)
