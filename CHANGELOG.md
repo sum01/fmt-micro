@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.1] - 2017-11-18
+
+### Changed
+
+* The two python formatters into one line like the `go` formatters.
+
+### Fixes
+
+* A whitespace error in the command.
+
 ## [2.0.0] - 2017-11-18
 
 ### Added
@@ -125,7 +135,8 @@ and this project adheres to
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.0...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/sum01/fmt-micro/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/sum01/fmt-micro/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/sum01/fmt-micro/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/sum01/fmt-micro/compare/v1.2.0...v1.2.1
