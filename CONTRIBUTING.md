@@ -32,5 +32,16 @@ to selectively add lines.
       filetype is not known by Micro (displayed as `Unknown`), then use the
       literal file extension (without the period)
   * `formattercommand` is the literal command to run the formatter
+  * `args` can be left empty, like `insert("filetype", "formattercommand")` if
+    there aren't any, or at least any relevant ones.
 * PS: Alphabetical order doesn't matter in relation to the order of `insert()`
   commands. The `fmt list` command has a sort in it.
+
+Note that regardless of how you structure the `insert()` code, the filepath is
+always added to the end of the `args`, if there are any. Also, a space is added
+between the `formattercommand`, `args`, and the filepath.
+
+**Example:**\
+`insert("python", "autopep8", "-i")`\
+turns into the command..\
+`autopep8 -i path/to/filename`
