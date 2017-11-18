@@ -11,7 +11,7 @@ want to use.
 | Formatter            | Language(s)                                                                                     |
 | :------------------- | :---------------------------------------------------------------------------------------------- |
 | [align-yaml]         | `YAML`                                                                                          |
-| [autopep8]           | `Python`                                                                                        |
+| [autopep8], [yapf]   | `Python`                                                                                        |
 | [clang-format]       | `C`, `C++`, `Objective-C`                                                                       |
 | [cljfmt]             | `Clojure`                                                                                       |
 | [coffee-fmt]         | `CoffeeScript`                                                                                  |
@@ -36,7 +36,6 @@ want to use.
 | [prettier]           | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
 | [puppet-lint]        | `Puppet`                                                                                        |
 | [uncrustify]         | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
-| [yapf]               | `Python`                                                                                        |
 
 Note that you can also get a list of formatters by running the `fmt` command.
 
