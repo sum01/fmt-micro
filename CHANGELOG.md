@@ -8,13 +8,24 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.2] - 2017-11-18
+
+### Changed
+
+* The arguments, so now they're held in a table, to make adding them not require
+  so much careful string concatenation.
+
+### Fixed
+
+* Windows support
+
 ## [2.0.1] - 2017-11-18
 
 ### Changed
 
 * The two python formatters into one line like the `go` formatters.
 
-### Fixes
+### Fixed
 
 * A whitespace error in the command.
 
@@ -135,7 +146,8 @@ and this project adheres to
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.1...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/sum01/fmt-micro/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/sum01/fmt-micro/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/sum01/fmt-micro/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/sum01/fmt-micro/compare/v1.2.1...v1.3.0
