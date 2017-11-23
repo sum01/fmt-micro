@@ -1,5 +1,7 @@
 # fmt-micro
 
+[![GitHub tag](https://img.shields.io/github/tag/sum01/fmt-micro.svg)](https://github.com/sum01/fmt-micro/releases)
+
 This is a multi-language formatting plugin for the
 [Micro text-editor.](https://github.com/zyedidia/micro)
 
