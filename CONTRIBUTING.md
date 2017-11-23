@@ -35,6 +35,10 @@ to selectively add lines.
   * `args` can be left empty, like `insert("filetype", "formattercommand")` if
     there aren't any, or at least any relevant ones.
     * If multiple are needed, add them as a table, like above.
+    * If an arg depends on another, such as `--uses-tabs` and the `uses_tabs`
+      var, put them in order of eachother, like this: `insert("filetype",
+      "formattercommand", {"--uses-tabs", uses_tabs})`
+      * Do NOT concat these together, as `JobSpawn` requires them seperate.
 * PS: Alphabetical order doesn't matter in relation to the order of `insert()`
   commands. The `fmt list` command has a sort in it.
 

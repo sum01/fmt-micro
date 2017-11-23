@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+* The way formatters are launched, so that the more safe/portable `JobSpawn` (a
+  Micro binding to Go's `exec.Command`) is used.
+* Performance improvements across the board (not benchmarked) by following
+  advice at https://springrts.com/wiki/Lua_Performance
+
 ## [2.0.2] - 2017-11-18
 
 ### Changed

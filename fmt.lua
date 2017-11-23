@@ -1,5 +1,7 @@
 VERSION = "2.0.2"
 
+-- All questions about weird performance optimizations should be directed here: https://springrts.com/wiki/Lua_Performance
+
 -- Lets the user disable the onSave() formatting
 if GetOption("fmt-onsave") == nil then
   AddOption("fmt-onsave", true)
@@ -39,28 +41,58 @@ end
 
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 local function init_table()
+  -- Localize for speed (outside of insert function to reduce recursive memory usage)
+  local type = type
+  local table_insert = table.insert
+  local table_remove = table.remove
+  -- keep track of which index we're on in fmt_table
+  local fmt_count = 1
+
   -- Makes inserting table values more flexible, and take less code per formatter
   local function insert(filetype, fmt, args)
     -- filetype should be passed as a table if the formatter supports more than 1 filetype.
     if type(filetype) == "table" then
       -- Split the table of types into a single value
-      for _, val in pairs(filetype) do
+      for i = 1, #filetype do
         -- Recursively insert the values into the table
-        insert(val, fmt, args)
+        insert(filetype[i], fmt, args)
       end
     else
-      -- Just lets us not have to brace single/no-command formatters when doing insert()
-      -- aka less cruft
-      if type(args) ~= "table" then
+      if type(args) == "table" then
+        local function unfold_args(nested_args, nest_args_index)
+          -- Remove the current (nested) args
+          table_remove(args, nest_args_index)
+
+          -- loop through the nested args
+          for index = 1, #nested_args do
+            -- Insert the nested args one at a time at the position it was removed from
+            table_insert(args, nest_args_index, nested_args[index])
+            -- Keep moving back so that each insert doesn't put things out of order
+            nest_args_index = nest_args_index + 1
+          end
+        end
+
+        -- Loop through args to unfold nested args
+        for i = 1, #args do
+          -- This nested table check will happen on some unruly_args
+          if type(args[i]) == "table" then
+            -- Removes the nested args by placing them 1-by-1 into their own index
+            unfold_args(args[i], i)
+          end
+        end
+      else
+        -- Just lets us not have to brace single/no-command formatters when doing insert()
         args = {args}
       end
+
       -- Actually insert the table into the table in the format shown:
       -- fmt_table[1] = filetype
       -- fmt_table[2] = formatter_cmd
       -- fmt_table[3] = {args}
-      table.insert(fmt_table, {filetype, fmt, args})
-    end
-  end
+      fmt_table[fmt_count] = {filetype, fmt, args}
+      fmt_count = fmt_count + 1
+    end -- end of if type(filetype) check
+  end -- end of insert() function
 
   local indent = indent_size()
   local compat_indent = compat_indent_size()
@@ -75,9 +107,9 @@ local function init_table()
   local conf_path = JoinPaths(configDir, "plugins", "fmt", "configs")
   messenger:AddLog("fmt: using config path '", conf_path .. "'")
 
-  -- Empty out the table before filling it
+  -- Empty out the table before filling it | for of len is faster than pairs
   -- Recommended over doing fmt_table = {} to avoid new pointer
-  for i in pairs(fmt_table) do
+  for i = 1, #fmt_table do
     fmt_table[i] = nil
   end
 
@@ -86,20 +118,20 @@ local function init_table()
   insert("crystal", "crystal", {"tool", "format"})
   insert("fish", "fish_indent", "-w")
   -- Maybe switch to https://github.com/ruby-formatter/rufo
-  insert("ruby", "rubocop", {"-f quiet", "-o"})
+  insert("ruby", "rubocop", {"-f", "quiet", "-o"})
   -- Doesn't have any configurable args, and forces tabs.
   insert("go", "gofmt", {"-s", "-w"})
   insert("go", "goimports", "-w")
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", {"-i " .. indent, "-w replace"})
+  insert("lua", "luafmt", {"-i", indent, "-w", "replace"})
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
   insert(
     {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
     "prettier",
-    {"--use-tabs " .. uses_tabs, "--tab-width " .. indent, "--write"}
+    {"--use-tabs", uses_tabs, "--tab-width", indent, "--write"}
   )
   -- 0 signifies tabs, so we use compat
-  insert("shell", "shfmt", {"-i " .. compat_indent, "-s", "-w"})
+  insert("shell", "shfmt", {"-i", compat_indent, "-s", "-w"})
   -- overwrite is default, and we can't pass config options
   insert("rust", "rustfmt")
   -- Doesn't support configurable args for tabs/spaces
@@ -110,7 +142,7 @@ local function init_table()
   insert(
     {"c", "c++", "csharp", "objective-c", "d", "java", "p", "vala"},
     "uncrustify",
-    {"-c " .. JoinPaths(conf_path, "uncrustify"), "--no-backup"}
+    {"-c", JoinPaths(conf_path, "uncrustify"), "--no-backup"}
   )
   -- Options only available via a config file
   insert("clojure", "cljfmt")
@@ -126,7 +158,7 @@ local function init_table()
   insert("marko", "marko-prettyprint")
   insert("ocaml", "ocp-indent")
   -- Overwrite is default if only source (-s) used
-  insert("yaml", "align", {"-p " .. indent, "-s"})
+  insert("yaml", "align", {"-p", indent, "-s"})
   insert("haskell", "stylish-haskell", "-i")
   insert("puppet", "puppet-lint", "--fix")
   -- The -a arg can be used multiple times to increase aggresiveness. Unsure of what people prefer, so doing 1.
@@ -134,27 +166,23 @@ local function init_table()
 
   -- Keep the more annoying args in a table
   local unruly_args = {
-    ["htmlbeautifier"] = "-t " .. indent,
+    ["htmlbeautifier"] = {"-t", indent},
     ["coffee-fmt"] = "space",
     ["pug-beautifier"] = nil,
-    ["perltidy"] = "-i=" .. indent,
-    ["js-beautify"] = "-s " .. indent
+    ["perltidy"] = {"-i=", indent},
+    ["js-beautify"] = {"-s", indent}
   }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if uses_tabs == "true" then
     unruly_args["htmlbeautifier"] = "-T"
     unruly_args["coffee-fmt"] = "tab"
-    unruly_args["pug-beautifier"] = "-t " .. indent
-    unruly_args["perltidy"] = "-et=" .. indent
+    unruly_args["pug-beautifier"] = {"-t", indent}
+    unruly_args["perltidy"] = {"-et=", indent}
     unruly_args["js-beautify"] = "-t"
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
-  insert(
-    "coffeescript",
-    "coffee-fmt",
-    {"--indent_style " .. unruly_args["coffee-fmt"], "--indent_size " .. indent, "-i"}
-  )
+  insert("coffeescript", "coffee-fmt", {"--indent_style", unruly_args["coffee-fmt"], "--indent_size", indent, "-i"})
   insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
   insert("perl", "perltidy", unruly_args["perltidy"])
   insert("javascript", "js-beautify", {unruly_args["js-beautify"], "-r", "-f"})
@@ -162,8 +190,10 @@ end
 
 -- Declares the options to enable/disable formatter(s)
 local function create_options()
+  local value
   -- Avoids manually defining commands twice by reading the table
-  for _, value in pairs(fmt_table) do
+  for i = 1, #fmt_table do
+    value = fmt_table[i]
     -- Creates the options to enable/disable formatters individually
     if GetOption(value[2]) == nil then
       -- Disabled by default, require user to enable for safety
@@ -172,10 +202,18 @@ local function create_options()
   end
 end
 
+-- Returns an iteration of the table passed
+-- Just used to check if a table is nil or not basically
+local function next_table(t)
+  -- Storing this as local is supposedly faster
+  local next = next
+  return next(t)
+end
+
 -- Initialize the table & options when opening Micro
 function onViewOpen(view)
   -- A quick check if the table is empty
-  if next(fmt_table) == nil then
+  if next_table(fmt_table) == nil then
     -- Only needs to run on the open of Micro
     init_table()
     create_options()
@@ -184,18 +222,30 @@ end
 
 -- Read the table to get a list of formatters for display
 local function list_supported()
-  -- index 1 is used to keep track of already-added formatters (to prevent duplicates)
-  -- index 2 is actually displayed to the user
-  local supported = {}
-  -- Equal to the current formaters GetOption() status, to show if it's on or off
-  local on_off
-  -- A bool to tell the loop if the current formatter was already found
-  local already_contains
+  local function get_max_len()
+    local value
+    local max_len = 0
+    local cur_len
+    -- Get the biggest length formatter name for building a correctly-sized table for display
+    for i = 1, #fmt_table do
+      value = fmt_table[i]
+
+      cur_len = value[2]:len()
+
+      if cur_len > max_len then
+        max_len = cur_len
+      end
+    end
+
+    return max_len
+  end
+
   -- Equal to the length of the longest formatter name
-  local max_pad_len = 0
+  local max_pad_len = get_max_len()
+
   -- Used to hold the current formatters length
   local pad_len
-  -- Just empty spaces to add padding for display
+  -- Used to add padding for display output
   local pad_string
 
   local function get_padding(len, pad_char)
@@ -206,24 +256,39 @@ local function list_supported()
     return padding
   end
 
-  -- Get the biggest length formatter name for building a correctly-sized table for display
-  for _, value in pairs(fmt_table) do
-    if value[2]:len() > max_pad_len then
-      max_pad_len = value[2]:len()
-    end
-  end
+  -- index 1 is used to keep track of already-added formatters (to prevent duplicates)
+  -- index 2 is actually displayed to the user
+  local unique_formatters = {}
 
-  -- Loop through the main fmt_table, adding un-added formatters to the display table
-  for _, value in pairs(fmt_table) do
-    already_contains = false
+  local function check_contains(check_against)
     -- See if the value is already in the table
-    for _, x in pairs(supported) do
-      if x[1] == value[2] then
-        -- Found a match, so break out
-        already_contains = true
-        break
+    for index = 1, #unique_formatters do
+      if unique_formatters[index] == check_against then
+        -- Found a match
+        return true
       end
     end
+    -- No match
+    return false
+  end
+
+  local display_supported = {}
+  -- Holds a single index of fmt_table in the loop
+  local value
+  -- Used to keep track of what index we're on in display_supported & unique_formatters
+  local table_count = 1
+  -- Equal to the current formaters GetOption() status, to show if it's on or off
+  local on_off
+  -- A bool to tell the loop if the current formatter was already found
+  local already_contains
+
+  -- Loop through the main fmt_table, adding un-added formatters to the display table
+  for i = 1, #fmt_table do
+    -- Hold the current index val for checking
+    value = fmt_table[i]
+
+    -- True/False if the current formatter cmd is already in the supported table
+    already_contains = check_contains(value[2])
 
     -- Don't duplicate inserts, such as "prettier", when they support multiple filetypes...
     -- since the fmt_table will technically contain lots of duplicate formatters on any multi-filetype formatters
@@ -238,8 +303,13 @@ local function list_supported()
       -- Fill a string with empty space equal to (longest formatter - current formatter)
       pad_len = max_pad_len - value[2]:len()
       pad_string = get_padding(pad_len, " ")
-      -- Insert value[2] by itself in index 1 to be checked against, index 2 is for display only
-      table.insert(supported, {value[2], "|" .. value[2] .. pad_string .. "|  " .. on_off .. "   |"})
+
+      -- Insert value[2] by itself to be checked against
+      unique_formatters[table_count] = value[2]
+      -- Purely for display to the user from inside of Micro's log
+      display_supported[table_count] = "|" .. value[2] .. pad_string .. "|  " .. on_off .. "   |"
+      -- Increment to not overwrite already added values
+      table_count = table_count + 1
     end
   end
 
@@ -252,17 +322,16 @@ local function list_supported()
   pad_string = get_padding(max_pad_len, "-")
   local separator = "+" .. pad_string .. "+--------+\n"
 
-  local display_table = {}
-  for _, val in pairs(supported) do
-    -- index 2 is the display value
-    table.insert(display_table, val[2])
-  end
+  -- Localize for speed
+  local table_sort = table.sort
+  local table_concat = table.concat
+
   -- Sort alphabetically.
-  table.sort(display_table)
+  table_sort(display_supported)
 
   -- Output the list (table) of formatters to the log
   messenger:AddLog(
-    "\n" .. separator .. table_top .. separator .. table.concat(display_table, "\n") .. "\n" .. separator
+    "\n" .. separator .. table_top .. separator .. table_concat(display_supported, "\n") .. "\n" .. separator
   )
 
   messenger:Message("fmt: Supported formatters, and their status, were printed to the log.")
@@ -297,53 +366,69 @@ local function format()
     init_table()
   end
 
-  -- Returns the literal file extension when called
-  local function get_filetype()
-    -- If there's no match, we return nil to fail format()
-    local type = nil
-
-    -- Iterates through the path, and captures any letters after a period
-    -- Since it's an iter, the last pass will be the extension (if it exists)
-    for gstring in string.gmatch(CurView().Buf.Path, "%.(%a*)") do
-      type = gstring
-    end
-
-    return type
-  end
-
   -- Save filetype for checking
   local file_type = CurView().Buf:FileType()
+  local file_path = CurView().Buf.Path
 
   -- Returns "Unknown" when Micro can't file the type, so we just grab the extension
   if file_type == "Unknown" then
-    file_type = get_filetype()
+    local golib_path = import("path")
+    file_type = golib_path.Ext(file_path)
 
-    if file_type == nil then
+    -- Returns an empty string if it doesn't find an extension
+    if file_type == "" then
       -- Stop running if unknown and unsupported filetype
       messenger:AddLog("fmt: Could not find a filetype, stopping early.")
       do
         return
       end
     else
+      -- Cut off the period leftover by golib's Ext call
+      file_type = file_type:sub(2)
       messenger:AddLog("fmt: Micro failed to get filetype, but I detected: ", file_type)
     end
   end
 
-  local target_fmt = nil
-  -- Parse the table, looking for a matching filetype
-  -- Note that if there are multiples of the same filetype, only the first will get used
-  for index, values in pairs(fmt_table) do
-    -- Check if the formatter supports the found filetype
-    if values[1] == file_type then
-      -- Only use the specified formatter if it's enabled
-      if GetOption(values[2]) then
-        -- Save the table's values of the desired index to use below..
-        target_fmt = fmt_table[index]
-        -- Stop looking for more
-        break
+  local function get_valid_fmt()
+    -- localize for speed
+    local type = type
+    local setmetatable = setmetatable
+    local getmetatable = getmetatable
+    -- Needed to prevent table.insert from inserting into "fmt_table" when targetting "target_fmt"
+    local function deepcopy(orig)
+      local orig_type = type(orig)
+      local copy
+      if orig_type == "table" then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+          copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+      else -- number, string, boolean, etc
+        copy = orig
+      end
+      return copy
+    end
+
+    local values
+    -- Parse the table, looking for a matching filetype
+    -- Note that if there are multiples of the same filetype, only the first will get used
+    for i = 1, #fmt_table do
+      values = fmt_table[i]
+      -- Check if the formatter supports the found filetype
+      if values[1] == file_type then
+        -- Only use the specified formatter if it's enabled
+        if GetOption(values[2]) then
+          -- Save the table's values of the desired index to use below..
+          return deepcopy(values)
+        end
       end
     end
+    -- Return nil if there aren't matches
+    return nil
   end
+
+  local target_fmt = get_valid_fmt()
 
   -- target_fmt[1] is filetype
   -- target_fmt[2] is the literal command (rustfmt, gofmt, etc.)
@@ -351,32 +436,31 @@ local function format()
 
   -- Only do anything if the filetype has is a supported formatter
   if target_fmt ~= nil then
-    local command = target_fmt[2]
-    local file = CurView().Buf.Path
-
-    -- Check for args (index 3 is a table of args)
-    -- ipairs will stop after hitting nil so we don't waste time looping
-    for _, value in ipairs(target_fmt[3]) do
-      command = command .. " " .. value
-    end
-
-    command = command .. " " .. file
-    -- Inform the user of exactly what will be ran
-    messenger:AddLog('fmt: Running "' .. command .. '"')
-
-    -- Actually run the formatter
-    if OS == "windows" then
-      -- Both JobSpawn and JobStart don't work on Windows (in my tests), but this does...
-      -- FIXME: if/when Micro fixes Windows support, remove this io.popen stuff
-      local proc = io.popen(command)
-      local proc_out = proc:read("*a")
-      proc:close()
-      onExit()
-      onStdout(proc_out)
+    -- Check for if any args (index 3 is a table of args)
+    -- Formatters like `rustfmt` will have nil args
+    if next_table(target_fmt[3]) ~= nil then
+      -- Localize for speed
+      local table_insert = table.insert
+      -- Add the file to the end of args | table.insert to ensure order
+      table_insert(target_fmt[3], file_path)
     else
-      -- Micro-specific process runner
-      JobStart(command, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
+      -- If there aren't args (such as for `rustfmt`) then just equal the filepath
+      -- Has to be a table because JobSpawn requires the args as a table/array
+      target_fmt[3] = {file_path}
     end
+
+    -- Build the string to show the user what'll actually run
+    local output_string = target_fmt[2]
+    -- Localize for speed | ipairs to ensure order
+    local ipairs = ipairs
+    -- Add all the args/filepath to the display string
+    for _, v in ipairs(target_fmt[3]) do
+      output_string = output_string .. " " .. v
+    end
+    messenger:AddLog('fmt: Running "' .. output_string .. '"')
+
+    -- Micro binding to Golang's exec.Command()
+    JobSpawn(target_fmt[2], target_fmt[3], "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
   end
 end
 
@@ -396,7 +480,6 @@ function fmt_usr_input(input)
     -- "list" is the only other supported command at the moment
     list_supported()
   else
-    -- This should probably never actually run...
     messenger:Message("fmt: Unknown command! Run 'help fmt' for info.")
   end
 end
