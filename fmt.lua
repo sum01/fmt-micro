@@ -10,7 +10,7 @@ end
 -- The "global" var (a dictionary) that holds all filetypes/commands/args
 local fmt_table = {}
 -- Hold the last used settings to be checked against later
-local saved_settings = {}
+local saved_settings = {["indent"] = nil, ["tabs"] = nil}
 
 local function indent_size()
   -- can't be 0
@@ -100,7 +100,8 @@ local function init_table()
 
   -- Save the used settings to be checked against later in the format() function
   -- Don't save compat, as there's no value to actually check it against in Micro
-  saved_settings = {["indent"] = indent, ["tabs"] = uses_tabs}
+  saved_settings["indent"] = indent
+  saved_settings["tabs"] = uses_tabs
 
   -- Saves the path to the current config dir for any config paths in the insert() commands below..
   -- Note: configDir and JoinPaths() are Micro-specific
