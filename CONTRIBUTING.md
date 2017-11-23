@@ -17,7 +17,7 @@ plugin.
 
 First fork the repo, create a branch from `master`, push your changes to your
 repo, then submit a PR onto `master`.\
-Please don't commit tons of changes in one big commit. Instead, use `git commit -p`
+Please don't commit tons of changes in one big commit. Instead, use `git add -p`
 to selectively add lines.
 
 ## Adding another formatter:
