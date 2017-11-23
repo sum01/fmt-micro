@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.1.0] - 2017-11-23
+
 ### Changed
 
 * The way formatters are launched, so that the more safe/portable `JobSpawn` (a
@@ -153,7 +155,8 @@ and this project adheres to
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.0.2...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/sum01/fmt-micro/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/sum01/fmt-micro/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/sum01/fmt-micro/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/sum01/fmt-micro/compare/v1.3.0...v2.0.0
