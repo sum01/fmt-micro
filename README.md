@@ -70,6 +70,8 @@ The formatter will run on-save, unless `fmt-onsave` is false.
 
 * `fmt` to run the formatter on the current file.
 * `fmt list` to output the supported formatters to Micro's log.
+* `fmt update` to force an update of the formatter settings, which is useful for
+  if you recently added a conf file to the dir and want a formatter to use it.
 
 Run `help fmt` to bring up a help file while in Micro.
 
