@@ -545,8 +545,11 @@ function fmt_usr_input(input)
   if input == nil then
     format()
   elseif input == "list" then
-    -- "list" is the only other supported command at the moment
     list_supported()
+  elseif input == "update" then
+    -- Lets the user force an update to the table
+    -- Mostly for if they added a conf file to the dir and didn't close Micro
+    init_table()
   else
     messenger:Message("fmt: Unknown command! Run 'help fmt' for info.")
   end
