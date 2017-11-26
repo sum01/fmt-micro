@@ -39,6 +39,40 @@ local function compat_indent_size()
   return compat
 end
 
+local function get_gopath_ext(f_path)
+  -- Grab the extension if Micro failed
+  local golib_path = import("path")
+  local f_type = golib_path.Ext(f_path)
+
+  -- Returns an empty string if it doesn't find an extension
+  if f_type == "" then
+    -- Stop running if there's no extension
+    return nil
+  else
+    -- Return the extension without the period from Go's path.Ext()
+    return f_type:sub(2)
+  end
+end
+
+local function get_extension(x)
+  local file_type = nil
+
+  -- When passed a view, first try the built-in CurView().Buf:FileType()
+  if x == CurView() then
+    file_type = x.Buf:FileType()
+    -- Returns "Unknown" when Micro can't file the type
+    if file_type == "Unknown" then
+      -- Fallback to the literal extension
+      file_type = get_gopath_ext(x.Buf.Path)
+    end
+  else
+    -- When passed a direct path, use Go's path lib
+    file_type = get_gopath_ext(x)
+  end
+
+  return file_type
+end
+
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 local function init_table()
   -- Localize for speed (outside of insert function to reduce recursive memory usage)
@@ -368,27 +402,15 @@ local function format()
   end
 
   -- Save filetype for checking
-  local file_type = CurView().Buf:FileType()
-  local file_path = CurView().Buf.Path
-
-  -- Returns "Unknown" when Micro can't file the type, so we just grab the extension
-  if file_type == "Unknown" then
-    local golib_path = import("path")
-    file_type = golib_path.Ext(file_path)
-
-    -- Returns an empty string if it doesn't find an extension
-    if file_type == "" then
-      -- Stop running if unknown and unsupported filetype
-      messenger:AddLog("fmt: Could not find a filetype, stopping early.")
-      do
-        return
-      end
-    else
-      -- Cut off the period leftover by golib's Ext call
-      file_type = file_type:sub(2)
-      messenger:AddLog("fmt: Micro failed to get filetype, but I detected: ", file_type)
+  local file_type = get_extension(CurView())
+  -- Stop running if no extension/filetype
+  if file_type == nil then
+    do
+      return
     end
   end
+
+  local file_path = CurView().Buf.Path
 
   local function get_valid_fmt()
     -- localize for speed
