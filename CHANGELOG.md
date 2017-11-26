@@ -8,6 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+* Config file detection in the current directory (with a fallback on our bundled
+  `fmt-micro/configs`)
+* Add an `fmt update` command to force formatter settings to refresh.
+
+### Changed
+
+* Move extension detection to their own functions
+* Minor optimizations
+
 ## [2.1.0] - 2017-11-23
 
 ### Changed
