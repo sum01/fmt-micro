@@ -73,6 +73,35 @@ local function get_extension(x)
   return file_type
 end
 
+local function check_has_conf(extension)
+  local dir = WorkingDirectory()
+
+  local go_ioutil = import("ioutil")
+  local readout = go_ioutil.ReadDir(dir)
+
+  if readout ~= nil then
+    local readout_name
+    local readout_extension
+    local readout_path
+
+    for i = 1, #readout do
+      readout_name = readout[i]:Name()
+
+      -- Save the current files full path
+      readout_path = JoinPaths(dir, readout_name)
+      -- get extension of current file
+      readout_extension = get_extension(readout_path)
+
+      -- if extension matches, return path to the config file
+      if readout_extension == extension then
+        return readout_path
+      end
+    end
+  end
+
+  return false
+end
+
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 local function init_table()
   -- Localize for speed (outside of insert function to reduce recursive memory usage)
@@ -137,10 +166,26 @@ local function init_table()
   saved_settings["indent"] = indent
   saved_settings["tabs"] = uses_tabs
 
-  -- Saves the path to the current config dir for any config paths in the insert() commands below..
-  -- Note: configDir and JoinPaths() are Micro-specific
-  local conf_path = JoinPaths(configDir, "plugins", "fmt", "configs")
-  messenger:AddLog("fmt: using config path '", conf_path .. "'")
+  -- Returns a full path to either a config file in the directory, or our bundled one
+  -- extension_str should be a string of the file extension needed, sans period
+  -- name is the folder name in our bundled configs | ex: fmt-micro/configs/NAME
+  local function resolve_conf(extension_str, name)
+    local has_conf = check_has_conf(extension_str)
+
+    if has_conf then
+      messenger:AddLog("fmt: Found " .. name .. ' conf in dir, using "', has_conf .. '"')
+      -- Returns a full path to the config file found in current dir
+      return has_conf
+    else
+      local bundled_conf = JoinPaths(configDir, "plugins", "fmt", "configs", name)
+      messenger:AddLog("fmt: Didn't find " .. name .. ' conf in dir, using bundled conf "', bundled_conf .. '"')
+      -- Return the bundled config path for the requested config
+      return bundled_conf
+    end
+  end
+
+  -- List of paths to config files, either ones in current dir or
+  local conf_files = {["uncrustify"] = resolve_conf("cfg", "uncrustify")}
 
   -- Empty out the table before filling it | for of len is faster than pairs
   -- Recommended over doing fmt_table = {} to avoid new pointer
@@ -177,7 +222,7 @@ local function init_table()
   insert(
     {"c", "c++", "csharp", "objective-c", "d", "java", "p", "vala"},
     "uncrustify",
-    {"-c", JoinPaths(conf_path, "uncrustify"), "--no-backup"}
+    {"-c", conf_files["uncrustify"], "--no-backup"}
   )
   -- Options only available via a config file
   insert("clojure", "cljfmt")
