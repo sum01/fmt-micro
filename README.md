@@ -10,34 +10,34 @@ want to use.
 
 ## Supported formatters
 
-| Formatter            | Language(s)                                                                                     |
-| :------------------- | :---------------------------------------------------------------------------------------------- |
-| [align-yaml]         | `YAML`                                                                                          |
-| [autopep8], [yapf]   | `Python`                                                                                        |
-| [clang-format]       | `C`, `C++`, `Objective-C`                                                                       |
-| [cljfmt]             | `Clojure`                                                                                       |
-| [coffee-fmt]         | `CoffeeScript`                                                                                  |
-| [crystal]            | `Crystal`                                                                                       |
-| [CSScomb]            | `CSS`                                                                                           |
-| [elm-format]         | `Elm`                                                                                           |
-| [fish_indent]        | `Fish`                                                                                          |
-| [goimports], [gofmt] | `Go`                                                                                            |
-| [htmlbeautifier]     | `HTML`                                                                                          |
-| [js-beautify]        | `Javascript`                                                                                    |
-| [latexindent.pl]     | `LaTeX`                                                                                         |
-| [luafmt]             | `Lua`                                                                                           |
-| [marko-prettyprint]  | `Marko`                                                                                         |
-| [ocp-indent]         | `OCaml`                                                                                         |
-| [perltidy]           | `Perl`                                                                                          |
-| [pug-beautifier-cli] | `Pug`                                                                                           |
-| [rubocop]            | `Ruby`                                                                                          |
-| [rustfmt]            | `Rust`                                                                                          |
-| [shfmt]              | `Shell`                                                                                         |
-| [stylish-haskell]    | `Haskell`                                                                                       |
-| [php-cs-fixer]       | `PHP`                                                                                           |
-| [prettier]           | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
-| [puppet-lint]        | `Puppet`                                                                                        |
-| [uncrustify]         | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
+| Formatter(s)                 | Language(s)                                                                                     |
+| :--------------------------- | :---------------------------------------------------------------------------------------------- |
+| [align-yaml]                 | `YAML`                                                                                          |
+| [autopep8], [yapf]           | `Python`                                                                                        |
+| [clang-format], [uncrustify] | `C`, `C++`, `Objective-C`                                                                       |
+| [cljfmt]                     | `Clojure`                                                                                       |
+| [coffee-fmt]                 | `CoffeeScript`                                                                                  |
+| [crystal]                    | `Crystal`                                                                                       |
+| [CSScomb]                    | `CSS`                                                                                           |
+| [elm-format]                 | `Elm`                                                                                           |
+| [fish_indent]                | `Fish`                                                                                          |
+| [goimports], [gofmt]         | `Go`                                                                                            |
+| [htmlbeautifier]             | `HTML`                                                                                          |
+| [js-beautify], [prettier]    | `Javascript`                                                                                    |
+| [latexindent.pl]             | `LaTeX`                                                                                         |
+| [luafmt]                     | `Lua`                                                                                           |
+| [marko-prettyprint]          | `Marko`                                                                                         |
+| [ocp-indent]                 | `OCaml`                                                                                         |
+| [perltidy]                   | `Perl`                                                                                          |
+| [pug-beautifier-cli]         | `Pug`                                                                                           |
+| [rubocop]                    | `Ruby`                                                                                          |
+| [rustfmt]                    | `Rust`                                                                                          |
+| [shfmt]                      | `Shell`                                                                                         |
+| [stylish-haskell]            | `Haskell`                                                                                       |
+| [php-cs-fixer]               | `PHP`                                                                                           |
+| [prettier]                   | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
+| [puppet-lint]                | `Puppet`                                                                                        |
+| [uncrustify]                 | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
 
 Note that you can also get a list of formatters by running the `fmt` command.
 
