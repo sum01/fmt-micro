@@ -8,15 +8,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.0] - 2017-11-26
+
 ### Added
 
 * Config file detection in the current directory (with a fallback on our bundled
-  `fmt-micro/configs`)
+  `fmt-micro/configs`). Currently used only on Uncrustify, but it's easy to add
+  to others.
 * Add an `fmt update` command to force formatter settings to refresh.
 
 ### Changed
 
 * Move extension detection to their own functions
+* Updated Uncrustify config to `0.66.1`
 * Minor optimizations
 
 ## [2.1.0] - 2017-11-23
@@ -166,7 +170,8 @@ and this project adheres to
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.1.0...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/sum01/fmt-micro/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/sum01/fmt-micro/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/sum01/fmt-micro/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/sum01/fmt-micro/compare/v2.0.0...v2.0.1

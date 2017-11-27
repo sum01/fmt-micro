@@ -5,8 +5,8 @@
     "Tags": ["beautifying", "formatting", "multi-language"],
     "Versions": [
       {
-        "Version": "2.1.0",
-        "Url": "https://github.com/sum01/fmt-micro/archive/v2.1.0.zip",
+        "Version": "2.2.0",
+        "Url": "https://github.com/sum01/fmt-micro/archive/v2.2.0.zip",
         "Require": {
           "micro": ">=1.3.0"
         }
