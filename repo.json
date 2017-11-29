@@ -2,7 +2,14 @@
   {
     "Name": "fmt",
     "Description": "A multi-language formatting plugin for Micro",
-    "Tags": ["beautifying", "formatting", "multi-language"],
+    "Tags": [
+      "beautifying",
+      "beautifier",
+      "formatter",
+      "formatting",
+      "multi-language",
+      "pretty-printer"
+    ],
     "Versions": [
       {
         "Version": "2.3.0",
