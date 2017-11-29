@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+* Rufo support
+
 ## [2.2.0] - 2017-11-26
 
 ### Added

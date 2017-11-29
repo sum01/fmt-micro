@@ -30,7 +30,7 @@ want to use.
 | [ocp-indent]                 | `OCaml`                                                                                         |
 | [perltidy]                   | `Perl`                                                                                          |
 | [pug-beautifier-cli]         | `Pug`                                                                                           |
-| [rubocop]                    | `Ruby`                                                                                          |
+| [rubocop], [rufo]            | `Ruby`                                                                                          |
 | [rustfmt]                    | `Rust`                                                                                          |
 | [shfmt]                      | `Shell`                                                                                         |
 | [stylish-haskell]            | `Haskell`                                                                                       |
@@ -97,6 +97,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [perltidy]: http://perltidy.sourceforge.net/
 [pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
 [rubocop]: https://github.com/bbatsov/rubocop
+[rufo]: https://github.com/ruby-formatter/rufo
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
 [shfmt]: https://github.com/mvdan/sh
 [stylish-haskell]: https://github.com/jaspervdj/stylish-haskell

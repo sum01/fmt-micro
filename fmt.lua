@@ -170,7 +170,8 @@ local function init_table()
 
   insert("crystal", "crystal", {"tool", "format"})
   insert("fish", "fish_indent", "-w")
-  -- Maybe switch to https://github.com/ruby-formatter/rufo
+  -- Doesn't seem to have config options
+  insert("ruby", "rufo")
   insert("ruby", "rubocop", {"-f", "quiet", "-o"})
   -- Doesn't have any configurable args, and forces tabs.
   insert("go", "gofmt", {"-s", "-w"})
