@@ -35,6 +35,7 @@ want to use.
 | [rustfmt]                    | `Rust`                                                                                          |
 | [beautysh], [shfmt]          | `Shell`                                                                                         |
 | [stylish-haskell]            | `Haskell`                                                                                       |
+| [tsfmt], [prettier]          | `Typescript`                                                                                    |
 | [php-cs-fixer]               | `PHP`                                                                                           |
 | [prettier]                   | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
 | [puppet-lint]                | `Puppet`                                                                                        |
@@ -104,6 +105,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
 [shfmt]: https://github.com/mvdan/sh
 [stylish-haskell]: https://github.com/jaspervdj/stylish-haskell
+[tsfmt]: https://github.com/vvakame/typescript-formatter
 [php-cs-fixer]: https://github.com/friendsofphp/PHP-CS-Fixer
 [prettier]: https://github.com/prettier/prettier
 [puppet-lint]: http://puppet-lint.com/

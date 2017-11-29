@@ -13,6 +13,7 @@ and this project adheres to
 * Rufo support
 * Beautysh support
 * Dfmt support
+* Tsfmt support
 
 ### Changed
 
