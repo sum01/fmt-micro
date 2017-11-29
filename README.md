@@ -41,7 +41,8 @@ want to use.
 | [puppet-lint]                | `Puppet`                                                                                        |
 | [uncrustify]                 | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
 
-Note that you can also get a list of formatters by running the `fmt` command.
+Note that you can also get a list of formatters by running the `fmt list`
+command.
 
 ### Installation
 
