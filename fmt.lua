@@ -28,22 +28,22 @@ local function using_tabs()
   return tabs
 end
 
-local function get_gopath_ext(f_path)
-  -- Grab the extension if Micro failed
-  local golib_path = import("path")
-  local f_type = golib_path.Ext(f_path)
-
-  -- Returns an empty string if it doesn't find an extension
-  if f_type == "" then
-    -- Stop running if there's no extension
-    return nil
-  else
-    -- Return the extension without the period from Go's path.Ext()
-    return f_type:sub(2)
-  end
-end
-
 local function get_extension(x)
+  local function get_gopath_ext(f_path)
+    -- Grab the extension if Micro failed
+    local golib_path = import("path")
+    local f_type = golib_path.Ext(f_path)
+
+    -- Returns an empty string if it doesn't find an extension
+    if f_type == "" then
+      -- Stop running if there's no extension
+      return nil
+    else
+      -- Return the extension without the period from Go's path.Ext()
+      return f_type:sub(2)
+    end
+  end
+
   local file_type = nil
 
   -- When passed a view, first try the built-in CurView().Buf:FileType()
@@ -62,33 +62,43 @@ local function get_extension(x)
   return file_type
 end
 
-local function check_has_conf(extension)
+-- Returns a full path to either a config file in the directory, or our bundled one
+-- extension should be a string of the file extension needed, sans period
+-- name is the folder name in our bundled configs | ex: fmt-micro/configs/NAME
+local function get_conf(name, extension)
+  -- The current local dir
   local dir = WorkingDirectory()
-
+  -- Go's ioutil library for scanning the current dir
   local go_ioutil = import("ioutil")
+  -- Gets an array of all the files in the current dir
   local readout = go_ioutil.ReadDir(dir)
 
   if readout ~= nil then
-    local readout_name
+    -- The current extension for comparison to what's valid
     local readout_extension
+    -- The full path to the file
     local readout_path
 
     for i = 1, #readout do
-      readout_name = readout[i]:Name()
-
-      -- Save the current files full path
-      readout_path = JoinPaths(dir, readout_name)
+      -- Save the current file's full path
+      readout_path = JoinPaths(dir, readout[i]:Name())
       -- get extension of current file
       readout_extension = get_extension(readout_path)
 
       -- if extension matches, return path to the config file
       if readout_extension == extension then
+        messenger:AddLog("fmt: Found " .. name .. '\'s config, using "' .. readout_path .. '"')
+        -- Return the found local config
         return readout_path
       end
     end
   end
 
-  return false
+  -- Fallback onto our bundled config if no local one is found
+  local bundled_conf = JoinPaths(configDir, "plugins", "fmt", "configs", name)
+  messenger:AddLog("fmt: Didn't find " .. name .. '\'s config, using bundled "', bundled_conf .. '"')
+  -- Return the bundled config path for the requested config
+  return bundled_conf
 end
 
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
@@ -150,27 +160,6 @@ local function init_table()
   saved_setting["indent"] = indent_size()
   saved_setting["tabs"] = using_tabs()
 
-  -- Returns a full path to either a config file in the directory, or our bundled one
-  -- extension_str should be a string of the file extension needed, sans period
-  -- name is the folder name in our bundled configs | ex: fmt-micro/configs/NAME
-  local function resolve_conf(extension_str, name)
-    local has_conf = check_has_conf(extension_str)
-
-    if has_conf then
-      messenger:AddLog("fmt: Found " .. name .. ' conf in dir, using "', has_conf .. '"')
-      -- Returns a full path to the config file found in current dir
-      return has_conf
-    else
-      local bundled_conf = JoinPaths(configDir, "plugins", "fmt", "configs", name)
-      messenger:AddLog("fmt: Didn't find " .. name .. ' conf in dir, using bundled conf "', bundled_conf .. '"')
-      -- Return the bundled config path for the requested config
-      return bundled_conf
-    end
-  end
-
-  -- List of paths to config files, either ones in current dir or
-  local conf_files = {["uncrustify"] = resolve_conf("cfg", "uncrustify")}
-
   -- Empty out the table before filling it
   -- Recommended over doing fmt_table = {} to avoid new pointer
   for i = 1, #fmt_table do
@@ -204,7 +193,7 @@ local function init_table()
   insert(
     {"c", "c++", "csharp", "objective-c", "d", "java", "p", "vala"},
     "uncrustify",
-    {"-c", conf_files["uncrustify"], "--no-backup"}
+    {"-c", get_conf("uncrustify", "cfg"), "--no-backup"}
   )
   -- Options only available via a config file
   insert("clojure", "cljfmt")
