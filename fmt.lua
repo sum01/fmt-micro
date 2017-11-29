@@ -224,7 +224,8 @@ local function init_table()
     ["perltidy"] = {"-i=", saved_setting["indent"]},
     ["js-beautify"] = {"-s", saved_setting["indent"]},
     ["shfmt"] = saved_setting["indent"],
-    ["beautysh"] = {"-i", saved_setting["indent"]}
+    ["beautysh"] = {"-i", saved_setting["indent"]},
+    ["dfmt"] = {"space", "--indent_size"}
   }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if saved_setting["tabs"] == "true" then
@@ -236,6 +237,7 @@ local function init_table()
     -- 0 signifies tabs
     unruly_args["shfmt"] = "0"
     unruly_args["beautysh"] = "-t"
+    unruly_args["dfmt"] = {"tab", "--tab_width"}
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
@@ -249,6 +251,7 @@ local function init_table()
   insert("javascript", "js-beautify", {unruly_args["js-beautify"], "-r", "-f"})
   insert("shell", "shfmt", {"-i", unruly_args["shfmt"], "-s", "-w"})
   insert("shell", "beautysh.py", {unruly_args["beautysh"], "-f"})
+  insert("d", "dfmt", {"--indent_style", unruly_args["dfmt"], saved_setting["indent"], "-i"})
 end
 
 -- Declares the options to enable/disable formatter(s)
