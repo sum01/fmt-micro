@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 * Rufo support
+* Beautysh support
 
 ### Changed
 

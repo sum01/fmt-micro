@@ -32,7 +32,7 @@ want to use.
 | [pug-beautifier-cli]         | `Pug`                                                                                           |
 | [rubocop], [rufo]            | `Ruby`                                                                                          |
 | [rustfmt]                    | `Rust`                                                                                          |
-| [shfmt]                      | `Shell`                                                                                         |
+| [beautysh], [shfmt]          | `Shell`                                                                                         |
 | [stylish-haskell]            | `Haskell`                                                                                       |
 | [php-cs-fixer]               | `PHP`                                                                                           |
 | [prettier]                   | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
@@ -79,6 +79,7 @@ Run `help fmt` to bring up a help file while in Micro.
 
 [align-yaml]: https://github.com/jonschlinkert/align-yaml
 [autopep8]: https://github.com/hhatto/autopep8
+[beautysh]: https://github.com/bemeurer/beautysh
 [clang-format]: https://clang.llvm.org/docs/ClangFormat.html
 [cljfmt]: https://github.com/snoe/node-cljfmt
 [coffee-fmt]: https://github.com/sterpe/coffee-fmt
