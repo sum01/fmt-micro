@@ -10,7 +10,7 @@ end
 -- The "global" var (a dictionary) that holds all filetypes/commands/args
 local fmt_table = {}
 -- Hold the last used settings to be checked against later
-local saved_settings = {["indent"] = nil, ["tabs"] = nil}
+local saved_setting = {["indent"] = nil, ["tabs"] = nil}
 
 local function indent_size()
   -- can't be 0
@@ -26,17 +26,6 @@ local function using_tabs()
     tabs = "true"
   end
   return tabs
-end
-
-local function compat_indent_size()
-  -- Used for some args to signify tabs
-  local compat = indent_size()
-
-  if using_tabs() == "true" then
-    -- shfmt uses this, as 0 signifies tabs
-    compat = "0"
-  end
-  return compat
 end
 
 local function get_gopath_ext(f_path)
@@ -157,14 +146,9 @@ local function init_table()
     end -- end of if type(filetype) check
   end -- end of insert() function
 
-  local indent = indent_size()
-  local compat_indent = compat_indent_size()
-  local uses_tabs = using_tabs()
-
   -- Save the used settings to be checked against later in the format() function
-  -- Don't save compat, as there's no value to actually check it against in Micro
-  saved_settings["indent"] = indent
-  saved_settings["tabs"] = uses_tabs
+  saved_setting["indent"] = indent_size()
+  saved_setting["tabs"] = using_tabs()
 
   -- Returns a full path to either a config file in the directory, or our bundled one
   -- extension_str should be a string of the file extension needed, sans period
@@ -187,13 +171,13 @@ local function init_table()
   -- List of paths to config files, either ones in current dir or
   local conf_files = {["uncrustify"] = resolve_conf("cfg", "uncrustify")}
 
-  -- Empty out the table before filling it | for of len is faster than pairs
+  -- Empty out the table before filling it
   -- Recommended over doing fmt_table = {} to avoid new pointer
   for i = 1, #fmt_table do
     fmt_table[i] = nil
   end
 
-  -- The literal file extension can be used when Micro can't support the filetype
+  -- The literal file extension (without period) can be used when Micro doesn't recognize the filetype
 
   insert("crystal", "crystal", {"tool", "format"})
   insert("fish", "fish_indent", "-w")
@@ -203,15 +187,13 @@ local function init_table()
   insert("go", "gofmt", {"-s", "-w"})
   insert("go", "goimports", "-w")
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", {"-i", indent, "-w", "replace"})
+  insert("lua", "luafmt", {"-i", saved_setting["indent"], "-w", "replace"})
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
   insert(
     {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
     "prettier",
-    {"--use-tabs", uses_tabs, "--tab-width", indent, "--write"}
+    {"--use-tabs", saved_setting["tabs"], "--tab-width", saved_setting["indent"], "--write"}
   )
-  -- 0 signifies tabs, so we use compat
-  insert("shell", "shfmt", {"-i", compat_indent, "-s", "-w"})
   -- overwrite is default, and we can't pass config options
   insert("rust", "rustfmt")
   -- Doesn't support configurable args for tabs/spaces
@@ -238,7 +220,7 @@ local function init_table()
   insert("marko", "marko-prettyprint")
   insert("ocaml", "ocp-indent")
   -- Overwrite is default if only source (-s) used
-  insert("yaml", "align", {"-p", indent, "-s"})
+  insert("yaml", "align", {"-p", saved_setting["indent"], "-s"})
   insert("haskell", "stylish-haskell", "-i")
   insert("puppet", "puppet-lint", "--fix")
   -- The -a arg can be used multiple times to increase aggresiveness. Unsure of what people prefer, so doing 1.
@@ -246,26 +228,34 @@ local function init_table()
 
   -- Keep the more annoying args in a table
   local unruly_args = {
-    ["htmlbeautifier"] = {"-t", indent},
+    ["htmlbeautifier"] = {"-t", saved_setting["indent"]},
     ["coffee-fmt"] = "space",
     ["pug-beautifier"] = nil,
-    ["perltidy"] = {"-i=", indent},
-    ["js-beautify"] = {"-s", indent}
+    ["perltidy"] = {"-i=", saved_setting["indent"]},
+    ["js-beautify"] = {"-s", saved_setting["indent"]},
+    ["shfmt"] = saved_setting["indent"]
   }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
-  if uses_tabs == "true" then
+  if saved_setting["tabs"] == "true" then
     unruly_args["htmlbeautifier"] = "-T"
     unruly_args["coffee-fmt"] = "tab"
-    unruly_args["pug-beautifier"] = {"-t", indent}
-    unruly_args["perltidy"] = {"-et=", indent}
+    unruly_args["pug-beautifier"] = {"-t", saved_setting["indent"]}
+    unruly_args["perltidy"] = {"-et=", saved_setting["indent"]}
     unruly_args["js-beautify"] = "-t"
+    -- 0 signifies tabs
+    unruly_args["shfmt"] = "0"
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
-  insert("coffeescript", "coffee-fmt", {"--indent_style", unruly_args["coffee-fmt"], "--indent_size", indent, "-i"})
+  insert(
+    "coffeescript",
+    "coffee-fmt",
+    {"--indent_style", unruly_args["coffee-fmt"], "--indent_size", saved_setting["indent"], "-i"}
+  )
   insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
   insert("perl", "perltidy", unruly_args["perltidy"])
   insert("javascript", "js-beautify", {unruly_args["js-beautify"], "-r", "-f"})
+  insert("shell", "shfmt", {"-i", unruly_args["shfmt"], "-s", "-w"})
 end
 
 -- Declares the options to enable/disable formatter(s)
@@ -441,7 +431,7 @@ local function format()
   CurView():Save(false)
 
   -- Makes sure the table is using up-to-date settings in args
-  if saved_settings["indent"] ~= indent_size() or saved_settings["tabs"] ~= using_tabs() then
+  if saved_setting["indent"] ~= indent_size() or saved_setting["tabs"] ~= using_tabs() then
     -- Reload the table (to get new args) if the user has changed their settings since opening Micro
     init_table()
   end
