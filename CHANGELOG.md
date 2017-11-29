@@ -12,6 +12,11 @@ and this project adheres to
 
 * Rufo support
 
+### Changed
+
+* Shortened the message you get when you do `fmt list` (doesn't change the log
+  output)
+
 ## [2.2.0] - 2017-11-26
 
 ### Added

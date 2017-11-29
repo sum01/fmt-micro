@@ -309,11 +309,14 @@ local function list_supported()
   local pad_string
 
   local function get_padding(len, pad_char)
-    local padding = ""
-    for _ = 0, len do
-      padding = padding .. pad_char
+    -- Add vals into a table. Concat in a loop is laggy
+    local padding = {}
+    for i = 1, len do
+      padding[i] = pad_char
     end
-    return padding
+    -- Localize for speed
+    local table_concat = table.concat
+    return table_concat(padding)
   end
 
   -- index 1 is used to keep track of already-added formatters (to prevent duplicates)
@@ -394,7 +397,7 @@ local function list_supported()
     "\n" .. separator .. table_top .. separator .. table_concat(display_supported, "\n") .. "\n" .. separator
   )
 
-  messenger:Message("fmt: Supported formatters, and their status, were printed to the log.")
+  messenger:Message("fmt: Formatter list printed to the log.")
 end
 
 function onStdout(out)
