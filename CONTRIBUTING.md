@@ -20,33 +20,31 @@ repo, then submit a PR onto `master`.\
 Please don't commit tons of changes in one big commit. Instead, use `git add -p`
 to selectively add lines.
 
+When making changes, put a short blurb about it under `Unreleased` in the
+`CHANGELOG.md`, making sure to adhear to the
+[Keep a changelog](http://keepachangelog.com/en/1.0.0/) standard.
+
+Changes to `.md` files can be left out of the changelog.
+
 ## Adding another formatter:
 
-* Be careful with spaces when using `insert()` to add the formatter. Spaces get
-  added between the command & args, and between args & the file.
-* Using insert: `insert("filetype", "formattercommand", {"args1", "arg2"})`
-  * `filetype` should be from `CurView().Buf:FileType()`
-    * If 2+ filetype's are supported, add them as a table (see how `prettier`
-      was done).
-    * To see if Micro supports the filetype, run `show filetype`. If the
-      filetype is not known by Micro (displayed as `Unknown`), then use the
-      literal file extension (without the period)
-  * `formattercommand` is the literal command to run the formatter
-  * `args` can be left empty, like `insert("filetype", "formattercommand")` if
-    there aren't any, or at least any relevant ones.
-    * If multiple are needed, add them as a table, like above.
-    * If an arg depends on another, such as `--uses-tabs` and the `uses_tabs`
-      var, put them in order of eachother, like this: `insert("filetype",
-      "formattercommand", {"--uses-tabs", uses_tabs})`
-      * Do NOT concat these together, as `JobSpawn` requires them seperate.
-* PS: Alphabetical order doesn't matter in relation to the order of `insert()`
-  commands. The `fmt list` command has a sort in it.
+To see if Micro supports the filetype, open the file and run `show filetype`. If
+the filetype is not known by Micro (displayed as `Unknown`), then use the
+literal file extension (without the period).
 
-Note that regardless of how you structure the `insert()` code, the filepath is
-always added to the end of the `args`, if there are any. Also, a space is added
-between the `formattercommand`, `args`, and the filepath.
+The `insert()` function is used to insert a formatter into the table. It takes
+care of the hard work for you.
 
-**Example:**\
-`insert("python", "autopep8", "-i")`\
-turns into the command..\
-`autopep8 -i path/to/filename`
+### Using insert()
+
+Both `filetype` and/or `args` can be in tables for multiple filetypes or args.
+
+If no args are needed, don't put any in. So no empty string for args, just leave
+it out.
+
+Do NOT concat any args/filetypes, even when one arg depends on another.
+Everything must be seperate strings.
+
+Note that, regardless of how you structure the `insert()` code, the target
+file's path is always the last "argument", so if you have an arg that requires
+the filepath then put it at the very end.
