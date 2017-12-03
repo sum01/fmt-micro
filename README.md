@@ -8,56 +8,62 @@ This is a multi-language formatting plugin for the
 This plugin does NOT bundle any formatters, so you must install whichever you
 want to use.
 
-## Supported formatters
+**Installation:** Just run `plugin install fmt` and restart Micro :+1:
 
-| Formatter(s)                 | Language(s)                                                                                     |
-| :--------------------------- | :---------------------------------------------------------------------------------------------- |
-| [align-yaml]                 | `YAML`                                                                                          |
-| [autopep8], [yapf]           | `Python`                                                                                        |
-| [clang-format], [uncrustify] | `C`, `C++`, `Objective-C`                                                                       |
-| [cljfmt]                     | `Clojure`                                                                                       |
-| [coffee-fmt]                 | `CoffeeScript`                                                                                  |
-| [crystal]                    | `Crystal`                                                                                       |
-| [CSScomb]                    | `CSS`                                                                                           |
-| [dfmt], [uncrustify]         | `D`                                                                                             |
-| [elm-format]                 | `Elm`                                                                                           |
-| [fish_indent]                | `Fish`                                                                                          |
-| [goimports], [gofmt]         | `Go`                                                                                            |
-| [htmlbeautifier]             | `HTML`                                                                                          |
-| [js-beautify], [prettier]    | `Javascript`                                                                                    |
-| [latexindent.pl]             | `LaTeX`                                                                                         |
-| [luafmt]                     | `Lua`                                                                                           |
-| [marko-prettyprint]          | `Marko`                                                                                         |
-| [ocp-indent]                 | `OCaml`                                                                                         |
-| [perltidy]                   | `Perl`                                                                                          |
-| [pug-beautifier-cli]         | `Pug`                                                                                           |
-| [rubocop], [rufo]            | `Ruby`                                                                                          |
-| [rustfmt]                    | `Rust`                                                                                          |
-| [beautysh], [shfmt]          | `Shell`                                                                                         |
-| [stylish-haskell]            | `Haskell`                                                                                       |
-| [tsfmt], [prettier]          | `Typescript`                                                                                    |
-| [php-cs-fixer]               | `PHP`                                                                                           |
-| [prettier]                   | `Javascript`, `JSX`, `Flow`, `TypeScript`, `CSS`, `Less`, `Sass`, `JSON`, `GraphQL`, `Markdown` |
-| [puppet-lint]                | `Puppet`                                                                                        |
-| [uncrustify]                 | `C`, `C++`, `C#`, `Objective-C`, `D`, `Java`, `Pawn`, `Vala`                                    |
+## Language Support
 
-Note that you can also get a list of formatters by running the `fmt list`
-command.
-
-### Installation
-
-Just run `plugin install fmt` and restart Micro :+1:
+| Language     | Supported Formatter(s)      |
+| :----------- | :-------------------------- |
+| C            | [clangformat], [uncrustify] |
+| C#           | [uncrustify]                |
+| C++          | [clangformat], [uncrustify] |
+| CSS          | [csscomb], [prettier]       |
+| Clojure      | [cljfmt]                    |
+| CoffeeScript | [coffee-fmt]                |
+| Crystal      | [crystal]                   |
+| D            | [dfmt], [uncrustify]        |
+| Elm          | [elm-format]                |
+| Fish         | [fish_indent]               |
+| Flow         | [prettier]                  |
+| Go           | [gofmt], [goimports]        |
+| GraphQL      | [prettier]                  |
+| HTML         | [htmlbeautifier]            |
+| Haskell      | [stylish-haskell]           |
+| JSON         | [prettier]                  |
+| JSX          | [prettier]                  |
+| Java         | [uncrustify]                |
+| JavaScript   | [js-beautify], [prettier]   |
+| LaTeX        | [latexindent]               |
+| Less         | [prettier]                  |
+| Lua          | [luafmt]                    |
+| Markdown     | [prettier]                  |
+| Marko        | [marko-prettyprint]         |
+| OCaml        | [ocp-indent]                |
+| Objective-C  | [clangformat], [uncrustify] |
+| PHP          | [php-cs-fixer]              |
+| Pawn         | [uncrustify]                |
+| Perl         | [perltidy]                  |
+| Pug          | [pug-beautifier-cli]        |
+| Puppet       | [puppet-lint]               |
+| Python       | [autopep8], [yapf]          |
+| Ruby         | [rubocop], [rufo]           |
+| Rust         | [rustfmt]                   |
+| Sass         | [prettier]                  |
+| Shell        | [beautysh], [sh]            |
+| TypeScript   | [prettier], [tsfmt]         |
+| Vala         | [uncrustify]                |
+| YAML         | [align-yaml]                |
 
 ### Usage
 
-The formatter will run on-save, unless `fmt-onsave` is false.
+The formatter will run on-save, unless `fmt-onsave` is set to false.
 
 **Commands:**
 
 * `fmt` to run the formatter on the current file.
 * `fmt list` to output the supported formatters to Micro's log.
-* `fmt update` to force an update of the formatter settings, which is useful for
-  if you recently added a conf file to the dir and want a formatter to use it.
+* `fmt update` to force an update of the in-memory formatter settings. Useful
+  for after adding a config file, or changing editor settings.
 
 Run `help fmt` to bring up a help file while in Micro.
 
@@ -66,7 +72,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [align-yaml]: https://github.com/jonschlinkert/align-yaml
 [autopep8]: https://github.com/hhatto/autopep8
 [beautysh]: https://github.com/bemeurer/beautysh
-[clang-format]: https://clang.llvm.org/docs/ClangFormat.html
+[clangformat]: https://clang.llvm.org/docs/ClangFormat.html
 [cljfmt]: https://github.com/snoe/node-cljfmt
 [coffee-fmt]: https://github.com/sterpe/coffee-fmt
 [crystal]: https://github.com/crystal-lang/crystal
@@ -78,7 +84,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [goimports]: https://godoc.org/golang.org/x/tools/cmd/goimports
 [htmlbeautifier]: https://github.com/threedaymonk/htmlbeautifier
 [js-beautify]: https://github.com/beautify-web/js-beautify
-[latexindent.pl]: https://github.com/cmhughes/latexindent.pl
+[latexindent]: https://github.com/cmhughes/latexindent.pl
 [luafmt]: https://github.com/trixnz/lua-fmt
 [marko-prettyprint]: https://github.com/marko-js/marko-prettyprint
 [ocp-indent]: https://www.typerex.org/ocp-indent.html
@@ -87,7 +93,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [rubocop]: https://github.com/bbatsov/rubocop
 [rufo]: https://github.com/ruby-formatter/rufo
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt
-[shfmt]: https://github.com/mvdan/sh
+[sh]: https://github.com/mvdan/sh
 [stylish-haskell]: https://github.com/jaspervdj/stylish-haskell
 [tsfmt]: https://github.com/vvakame/typescript-formatter
 [php-cs-fixer]: https://github.com/friendsofphp/PHP-CS-Fixer
