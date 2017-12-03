@@ -46,24 +46,7 @@ command.
 
 ### Installation
 
-To find your config's path, run `eval "messenger:Message(configDir)"`
-
-1. Open your config's `settings.json`, and add
-   `https://raw.githubusercontent.com/sum01/fmt-micro/master/repo.json` to
-   `pluginrepos`, like so:
-
-```json
-"pluginrepos": [
-  "https://raw.githubusercontent.com/sum01/fmt-micro/master/repo.json"
-],
-```
-
-2. Run `plugin install fmt`
-3. Restart Micro & it should work.
-
-If this plugin is added to the
-[official plugin channel](https://github.com/micro-editor/plugin-channel), you
-can skip step 1 of the installation.
+Just run `plugin install fmt` and restart Micro :+1:
 
 ### Usage
 
