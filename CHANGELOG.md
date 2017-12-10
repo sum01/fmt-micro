@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+* Dartfmt support
 * Tidy support
 
 ### Fixed
