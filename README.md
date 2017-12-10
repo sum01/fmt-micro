@@ -24,6 +24,7 @@ This plugin does NOT bundle any formatters, so you must install whichever you wa
 | Elm          | [elm-format]                            |
 | Fish         | [fish_indent]                           |
 | Flow         | [prettier]                              |
+| Fortran      | [fprettify]                             |
 | Go           | [gofmt], [goimports]                    |
 | GraphQL      | [prettier]                              |
 | HTML         | [htmlbeautifier], [js-beautify], [tidy] |
@@ -91,6 +92,7 @@ Run `help fmt` to bring up a help file while in Micro.
 [ocp-indent]: https://www.typerex.org/ocp-indent.html
 [perltidy]: http://perltidy.sourceforge.net/
 [pug-beautifier-cli]: https://github.com/lgaticaq/pug-beautifier-cli
+[fprettify]: https://github.com/pseewald/fprettify
 [rubocop]: https://github.com/bbatsov/rubocop
 [rufo]: https://github.com/ruby-formatter/rufo
 [rustfmt]: https://github.com/rust-lang-nursery/rustfmt

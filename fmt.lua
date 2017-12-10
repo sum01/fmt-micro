@@ -218,6 +218,8 @@ local function init_table()
   insert("typescript", "tsfmt", "-r")
   -- Not configurable by design
   insert("dart", "dartfmt", "-w")
+  -- For editor integration, it recommends --silent. It also seems to default to overwrite
+  insert("fortran", "fprettify", {"--indent", saved_setting["indent"], "--silent"})
 
   -- Keep the more annoying args in a table
   local unruly_args = {
