@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+* Tidy support
+
 ### Fixed
 
 * Missing filetype support (CSS and HTML) for js-beautify

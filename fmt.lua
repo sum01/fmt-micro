@@ -226,7 +226,9 @@ local function init_table()
     ["js-beautify"] = {"-s", saved_setting["indent"]},
     ["shfmt"] = saved_setting["indent"],
     ["beautysh"] = {"-i", saved_setting["indent"]},
-    ["dfmt"] = {"space", "--indent_size"}
+    ["dfmt"] = {"space", "--indent_size"},
+    -- Just used to convert tabs to spaces
+    ["tidy"] = saved_setting["indent"]
   }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if saved_setting["tabs"] == "true" then
@@ -239,6 +241,8 @@ local function init_table()
     unruly_args["shfmt"] = "0"
     unruly_args["beautysh"] = "-t"
     unruly_args["dfmt"] = {"tab", "--tab_width"}
+    -- Tells it to retain tabs, instead of converting them to spaces
+    unruly_args["tidy"] = "0"
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
@@ -253,6 +257,24 @@ local function init_table()
   insert("shell", "shfmt", {"-i", unruly_args["shfmt"], "-s", "-w"})
   insert("shell", "beautysh.py", {unruly_args["beautysh"], "-f"})
   insert("d", "dfmt", {"--indent_style", unruly_args["dfmt"], saved_setting["indent"], "-i"})
+  -- drop-empty-elements is false because Bootstrap uses empty elements
+  insert(
+    {"html", "xml"},
+    "tidy",
+    {
+      "--indent",
+      "auto",
+      "--indent-spaces",
+      saved_setting["indent"],
+      "--tab-size",
+      unruly_args["tidy"],
+      "--indent-with-tabs",
+      saved_setting["tabs"],
+      "--drop-empty-elements",
+      "false",
+      "-m"
+    }
+  )
 end
 
 -- Declares the options to enable/disable formatter(s)
