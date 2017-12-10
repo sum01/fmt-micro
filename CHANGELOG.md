@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+* Tab support for Luafmt (new feature in the formatter itself)
+
 ## [2.4.0] - 2017-12-10
 
 ### Added

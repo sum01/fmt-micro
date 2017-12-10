@@ -177,7 +177,7 @@ local function init_table()
   insert("go", "gofmt", {"-s", "-w"})
   insert("go", "goimports", "-w")
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", {"-i", saved_setting["indent"], "-w", "replace"})
+  insert("lua", "luafmt", {"-i", saved_setting["indent"], "--use-tabs", saved_setting["tabs"], "-w", "replace"})
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
   insert(
     {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
