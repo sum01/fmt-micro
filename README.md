@@ -10,47 +10,47 @@ This plugin does NOT bundle any formatters, so you must install whichever you wa
 
 ## Language Support
 
-| Language     | Supported Formatter(s)       |
-| :----------- | :--------------------------- |
-| C            | [clang-format], [uncrustify] |
-| C#           | [uncrustify]                 |
-| C++          | [clang-format], [uncrustify] |
-| CSS          | [csscomb], [prettier]        |
-| Clojure      | [cljfmt]                     |
-| CoffeeScript | [coffee-fmt]                 |
-| Crystal      | [crystal]                    |
-| D            | [dfmt], [uncrustify]         |
-| Elm          | [elm-format]                 |
-| Fish         | [fish_indent]                |
-| Flow         | [prettier]                   |
-| Go           | [gofmt], [goimports]         |
-| GraphQL      | [prettier]                   |
-| HTML         | [htmlbeautifier]             |
-| Haskell      | [stylish-haskell]            |
-| JSON         | [prettier]                   |
-| JSX          | [prettier]                   |
-| Java         | [uncrustify]                 |
-| JavaScript   | [js-beautify], [prettier]    |
-| LaTeX        | [latexindent]                |
-| Less         | [prettier]                   |
-| Lua          | [luafmt]                     |
-| Markdown     | [prettier]                   |
-| Marko        | [marko-prettyprint]          |
-| OCaml        | [ocp-indent]                 |
-| Objective-C  | [clang-format], [uncrustify] |
-| PHP          | [php-cs-fixer]               |
-| Pawn         | [uncrustify]                 |
-| Perl         | [perltidy]                   |
-| Pug          | [pug-beautifier-cli]         |
-| Puppet       | [puppet-lint]                |
-| Python       | [autopep8], [yapf]           |
-| Ruby         | [rubocop], [rufo]            |
-| Rust         | [rustfmt]                    |
-| Sass         | [prettier]                   |
-| Shell        | [beautysh], [sh]             |
-| TypeScript   | [prettier], [tsfmt]          |
-| Vala         | [uncrustify]                 |
-| YAML         | [align-yaml]                 |
+| Language     | Supported Formatter(s)               |
+| :----------- | :----------------------------------- |
+| C            | [clang-format], [uncrustify]         |
+| C#           | [uncrustify]                         |
+| C++          | [clang-format], [uncrustify]         |
+| CSS          | [csscomb], [js-beautify], [prettier] |
+| Clojure      | [cljfmt]                             |
+| CoffeeScript | [coffee-fmt]                         |
+| Crystal      | [crystal]                            |
+| D            | [dfmt], [uncrustify]                 |
+| Elm          | [elm-format]                         |
+| Fish         | [fish_indent]                        |
+| Flow         | [prettier]                           |
+| Go           | [gofmt], [goimports]                 |
+| GraphQL      | [prettier]                           |
+| HTML         | [htmlbeautifier], [js-beautify]      |
+| Haskell      | [stylish-haskell]                    |
+| JSON         | [prettier]                           |
+| JSX          | [prettier]                           |
+| Java         | [uncrustify]                         |
+| JavaScript   | [js-beautify], [prettier]            |
+| LaTeX        | [latexindent]                        |
+| Less         | [prettier]                           |
+| Lua          | [luafmt]                             |
+| Markdown     | [prettier]                           |
+| Marko        | [marko-prettyprint]                  |
+| OCaml        | [ocp-indent]                         |
+| Objective-C  | [clang-format], [uncrustify]         |
+| PHP          | [php-cs-fixer]                       |
+| Pawn         | [uncrustify]                         |
+| Perl         | [perltidy]                           |
+| Pug          | [pug-beautifier-cli]                 |
+| Puppet       | [puppet-lint]                        |
+| Python       | [autopep8], [yapf]                   |
+| Ruby         | [rubocop], [rufo]                    |
+| Rust         | [rustfmt]                            |
+| Sass         | [prettier]                           |
+| Shell        | [beautysh], [sh]                     |
+| TypeScript   | [prettier], [tsfmt]                  |
+| Vala         | [uncrustify]                         |
+| YAML         | [align-yaml]                         |
 
 ### Usage
 

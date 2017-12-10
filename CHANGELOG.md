@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+* Missing filetype support (CSS and HTML) for js-beautify
+
 ## [2.3.0] - 2017-11-29
 
 ### Added
