@@ -147,8 +147,6 @@ local function init_table()
   -- Doesn't have any configurable args, and forces tabs.
   insert("go", "gofmt", {"-s", "-w"})
   insert("go", "goimports", "-w")
-  -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", {"-i", saved_setting["indent"], "--use-tabs", saved_setting["tabs"], "-w", "replace"})
   -- Supports config files as well as cli options, unsure if this'll cause a clash.
   insert(
     {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
@@ -203,7 +201,8 @@ local function init_table()
     ["beautysh"] = {"-i", saved_setting["indent"]},
     ["dfmt"] = {"space", "--indent_size"},
     -- Just used to convert tabs to spaces
-    ["tidy"] = saved_setting["indent"]
+    ["tidy"] = saved_setting["indent"],
+    ["luafmt"] = saved_setting["indent"]
   }
   -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
   if saved_setting["tabs"] == "true" then
@@ -218,6 +217,8 @@ local function init_table()
     unruly_args["dfmt"] = {"tab", "--tab_width"}
     -- Tells it to retain tabs, instead of converting them to spaces
     unruly_args["tidy"] = "0"
+    -- --use-tabs just tells it to use tabs, it doesn't take a true/false
+    unruly_args["luafmt"] = {saved_setting["indent"], "--use-tabs"}
   end
 
   insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
@@ -250,6 +251,8 @@ local function init_table()
       "-m"
     }
   )
+  -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
+  insert("lua", "luafmt", {"-i", unruly_args["luafmt"], "-w", "replace"})
 
   -- Put the table into our permanent/global table
   formatters = temp_table
