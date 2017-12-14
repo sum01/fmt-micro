@@ -12,6 +12,9 @@ supported formatters will be printed to Micro's log.
 
 To set a formatter to be used on a specific language, run `set languagename-formatter formattername`.  
 The specific names can be found in the list from `fmt list`
+
+To set a formatter to be used on all its supported languages, run `fmt setall formattername`.
+
 To refresh the in-memory settings, run `fmt update`. This is useful if you changed your editor settings, or added a config file to your working directory.
 
 Please note that formatting of all languages is disabled by default, as to not accidentally

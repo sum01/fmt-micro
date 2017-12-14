@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 * Tab support for Luafmt (new feature in the formatter itself)
+* The `fmt setall formattername` command
 * The `fmt formattername` command, so that the specified formatter can be run without affecting your settings
 
 ### Changed

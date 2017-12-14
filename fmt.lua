@@ -561,6 +561,30 @@ function onSave(view)
   end
 end
 
+-- A command to set the specified formatter on all its supported languages in your settings.json
+local function set_all(formatter_name)
+  local valid_index = find_cli_index(formatter_name)
+  if valid_index ~= nil then
+    local tar_option
+    -- Go through the specified formatters supported types
+    for i = 1, #formatters[valid_index].supported do
+      -- For each supported type, set the type to the specified formatter
+      tar_option = formatters[valid_index].supported[i] .. "-formatter"
+      AddOption(tar_option, formatters[valid_index].cli)
+      -- Log the specific options we're setting, and to which formatter
+      messenger:AddLog('fmt: Setting "' .. tar_option .. '" to "' .. formatters[valid_index].cli .. '"')
+    end
+    messenger:Message(
+      'fmt: Set "' .. formatters[valid_index].cli .. '" to be used on all its supported file-types (specifics in log)'
+    )
+  else
+    messenger:Error(
+      'fmt: "' ..
+        formatter_name .. '" isn\'t a valid formatter name. Run "fmt list" and use the exact name of what you want'
+    )
+  end
+end
+
 -- A meta-command that triggers appropriate functions based on input
 function fmt_usr_input(input, ex_input)
   -- nil means they only typed "fmt"
@@ -573,6 +597,15 @@ function fmt_usr_input(input, ex_input)
     -- Mostly for if they added a conf file to the dir and didn't close Micro
     -- Also good for if the user changed Micro's settings without relaunching
     init_table()
+  elseif input == "setall" then
+    -- ex_input is the 3rd index of the command input (each space declares an index)
+    if ex_input ~= nil then
+      set_all(ex_input)
+    else
+      messenger:Error(
+        'fmt: The useall command requires the name of the formatter you want to set. Run "fmt list" and use the exact name of you want'
+      )
+    end
   else
     -- Check if the passed input == an existing formatter cli command
     local index = find_cli_index(input)
