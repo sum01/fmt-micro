@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Added
+
+* The `fmt unsetall formattername` command, which unsets all settings the specified formatter is currently set to.
+
 ## [3.0.0] - 2017-12-13
 
 ### Added

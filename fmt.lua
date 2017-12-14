@@ -588,6 +588,33 @@ local function set_all(formatter_name)
   end
 end
 
+local function unset_all(formatter_name)
+  local valid_index = find_cli_index(formatter_name)
+  if valid_index ~= nil then
+    local tar_option
+    -- Go through the specified formatters supported types
+    for i = 1, #formatters[valid_index].supported do
+      -- For each supported type, set the type to the specified formatter
+      tar_option = formatters[valid_index].supported[i] .. "-formatter"
+      -- Check if the option is actually set to the specified formatter
+      if GetOption(tar_option) == formatters[valid_index].cli then
+        -- Clear the option
+        AddOption(tar_option, "")
+        -- Log the specific options we're setting, and to which formatter
+        messenger:AddLog('fmt: Unsetting "' .. tar_option .. '"')
+      end
+    end
+    messenger:Message(
+      'fmt: Unset all options that "' .. formatters[valid_index].cli .. '" was set to (specifics in log)'
+    )
+  else
+    messenger:Error(
+      'fmt: "' ..
+        formatter_name .. '" isn\'t a valid formatter name. Run "fmt list" and use the exact name of what you want'
+    )
+  end
+end
+
 -- A meta-command that triggers appropriate functions based on input
 function fmt_usr_input(input, ex_input)
   -- nil means they only typed "fmt"
@@ -606,7 +633,16 @@ function fmt_usr_input(input, ex_input)
       set_all(ex_input)
     else
       messenger:Error(
-        'fmt: The useall command requires the name of the formatter you want to set. Run "fmt list" and use the exact name of you want'
+        'fmt: The setall command requires the name of the formatter you want to set. Run "fmt list" and use the exact name of what you want'
+      )
+    end
+  elseif input == "unsetall" then
+    -- ex_input is the 3rd index of the command input (each space declares an index)
+    if ex_input ~= nil then
+      unset_all(ex_input)
+    else
+      messenger:Error(
+        'fmt: The unsetall command requires the name of the formatter you want to unset. Run "fmt list" and use the exact name of what you want'
       )
     end
   else

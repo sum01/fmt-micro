@@ -67,6 +67,8 @@ The formatter will run on-save, unless `fmt-onsave` is set to false.
 * `fmt update` to force an update of the in-memory formatter settings.  
   Useful for after adding a config file, or changing editor settings.
 * `fmt setall formattername` to set the specified formatter to be used in all the options of its supported language types.
+* `fmt unsetall formattername` to unset all settings the specified formatter is currently set to.  
+  This is useful for if you uninstalled a formatter.
 
 Run `help fmt` to bring up a help file while in Micro.
 
