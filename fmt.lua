@@ -275,18 +275,10 @@ local function create_options()
   end
 end
 
--- Returns an iteration of the table passed
--- Just used to check if a table is nil or not basically
-local function next_table(t)
-  -- Storing this as local is supposedly faster
-  local next = next
-  return next(t)
-end
-
 -- Initialize the table & options when opening Micro
 function onViewOpen(view)
   -- A quick check if the table is empty
-  if next_table(fmt_table) == nil then
+  if next(formatters) == nil then
     -- Only needs to run on the open of Micro
     init_table()
     create_options()
@@ -447,7 +439,7 @@ local function list_supported()
 end
 
 function onStdout(out)
-  if out ~= nil and out ~= "" then
+  if out ~= "" then
     messenger:AddLog("fmt info: ", out)
   end
 end
@@ -459,7 +451,7 @@ function onExit()
 end
 
 function onStderr(err)
-  if err ~= nil and err ~= "" then
+  if err ~= "" then
     messenger:AddLog("fmt error: ", err)
   end
 end
