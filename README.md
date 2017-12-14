@@ -62,6 +62,7 @@ The formatter will run on-save, unless `fmt-onsave` is set to false.
 **Commands:**
 
 * `fmt` to run the formatter on the current file.
+* `fmt formattername` to run the specified formatter on the current file without affecting your settings.
 * `fmt list` to output the supported formatters to Micro's log.
 * `fmt update` to force an update of the in-memory formatter settings.  
   Useful for after adding a config file, or changing editor settings.

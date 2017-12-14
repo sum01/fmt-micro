@@ -2,15 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to
-[Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
 
 * Tab support for Luafmt (new feature in the formatter itself)
+* The `fmt formattername` command, so that the specified formatter can be run without affecting your settings
+
+### Changed
+
+* How the settings work, so now each language gets its own line in `settings.json`, instead of each formatter. Example: `"css-formatter": "csscomb"`
+* How `fmt list` output looks, so that it now displays much more information
 
 ## [2.4.0] - 2017-12-10
 

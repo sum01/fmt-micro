@@ -1,21 +1,14 @@
 VERSION = "2.4.0"
 
--- All questions about weird performance optimizations should be directed here: https://springrts.com/wiki/Lua_Performance
-
 -- Lets the user disable the onSave() formatting
 if GetOption("fmt-onsave") == nil then
   AddOption("fmt-onsave", true)
 end
 
--- The "global" var (a dictionary) that holds all filetypes/commands/args
-local fmt_table = {}
+-- The table that holds all the formatter objects for access from other functions
+local formatters = {}
 -- Hold the last used settings to be checked against later
 local saved_setting = {["indent"] = nil, ["tabs"] = nil}
-
-local function indent_size()
-  -- can't be 0
-  return GetOption("tabsize")
-end
 
 local function using_tabs()
   -- We need to use this with concat in init_table, so use a string instead of bool
@@ -28,7 +21,7 @@ local function using_tabs()
   return tabs
 end
 
-local function get_extension(x)
+local function get_filetype(x)
   local function get_gopath_ext(f_path)
     -- Grab the extension if Micro failed
     local golib_path = import("path")
@@ -74,19 +67,15 @@ local function get_conf(name, extension)
   local readout = go_ioutil.ReadDir(dir)
 
   if readout ~= nil then
-    -- The current extension for comparison to what's valid
-    local readout_extension
     -- The full path to the file
     local readout_path
 
     for i = 1, #readout do
       -- Save the current file's full path
       readout_path = JoinPaths(dir, readout[i]:Name())
-      -- get extension of current file
-      readout_extension = get_extension(readout_path)
 
       -- if extension matches, return path to the config file
-      if readout_extension == extension then
+      if get_filetype(readout_path) == extension then
         messenger:AddLog("fmt: Found " .. name .. '\'s config, using "' .. readout_path .. '"')
         -- Return the found local config
         return readout_path
@@ -101,69 +90,51 @@ local function get_conf(name, extension)
   return bundled_conf
 end
 
+-- Make sure the input is a table
+local function to_t(input)
+  -- Check if it's a table or not
+  if type(input) ~= "table" then
+    -- Return it as a table if its not already one
+    return {input}
+  else
+    return input
+  end
+end
+
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 local function init_table()
-  -- Localize for speed (outside of insert function to reduce recursive memory usage)
-  local type = type
-  local table_insert = table.insert
-  local table_remove = table.remove
-  -- keep track of which index we're on in fmt_table
-  local fmt_count = 1
-
-  -- Makes inserting table values more flexible, and take less code per formatter
-  local function insert(filetype, fmt, args)
-    -- filetype should be passed as a table if the formatter supports more than 1 filetype.
-    if type(filetype) == "table" then
-      -- Split the table of types into a single value
-      for i = 1, #filetype do
-        -- Recursively insert the values into the table
-        insert(filetype[i], fmt, args)
-      end
-    else
-      if type(args) == "table" then
-        local function unfold_args(nested_args, nest_args_index)
-          -- Remove the current (nested) args
-          table_remove(args, nest_args_index)
-
-          -- loop through the nested args
-          for index = 1, #nested_args do
-            -- Insert the nested args one at a time at the position it was removed from
-            table_insert(args, nest_args_index, nested_args[index])
-            -- Keep moving back so that each insert doesn't put things out of order
-            nest_args_index = nest_args_index + 1
-          end
-        end
-
-        -- Loop through args to unfold nested args
-        for i = 1, #args do
-          -- This nested table check will happen on some unruly_args
-          if type(args[i]) == "table" then
-            -- Removes the nested args by placing them 1-by-1 into their own index
-            unfold_args(args[i], i)
-          end
-        end
-      else
-        -- Just lets us not have to brace single/no-command formatters when doing insert()
-        args = {args}
-      end
-
-      -- Actually insert the table into the table in the format shown:
-      -- fmt_table[1] = filetype
-      -- fmt_table[2] = formatter_cmd
-      -- fmt_table[3] = {args}
-      fmt_table[fmt_count] = {filetype, fmt, args}
-      fmt_count = fmt_count + 1
-    end -- end of if type(filetype) check
-  end -- end of insert() function
-
   -- Save the used settings to be checked against later in the format() function
-  saved_setting["indent"] = indent_size()
+  saved_setting["indent"] = GetOption("tabsize")
   saved_setting["tabs"] = using_tabs()
 
-  -- Empty out the table before filling it
-  -- Recommended over doing fmt_table = {} to avoid new pointer
-  for i = 1, #fmt_table do
-    fmt_table[i] = nil
+  -- Hold the results of creating our formatter objects
+  -- Eventually fed into formatters
+  local temp_table = {}
+
+  -- Cuts down on cruft when inserting a new formatter
+  local function insert(supported, cli, args)
+    -- Convert them to a table, if they aren't already
+    supported = to_t(supported)
+    args = to_t(args)
+
+    -- Save the formatter as an object in the temporary table
+    temp_table[#temp_table + 1] = {
+      -- Its supported filetypes, as a table
+      ["supported"] = supported,
+      -- The cli command used to run it in JobSpawn
+      ["cli"] = cli,
+      -- The arguments, if any, as a table
+      ["args"] = args,
+      -- Returns a true/false if the formatters supports the filetype
+      ["supports_type"] = function(self, target)
+        for i = 1, #self.supported do
+          if self.supported[i] == target then
+            return true
+          end
+        end
+        return false
+      end
+    }
   end
 
   -- The literal file extension (without period) can be used when Micro doesn't recognize the filetype
@@ -279,18 +250,27 @@ local function init_table()
       "-m"
     }
   )
+
+  -- Put the table into our permanent/global table
+  formatters = temp_table
 end
 
 -- Declares the options to enable/disable formatter(s)
 local function create_options()
-  local value
-  -- Avoids manually defining commands twice by reading the table
-  for i = 1, #fmt_table do
-    value = fmt_table[i]
-    -- Creates the options to enable/disable formatters individually
-    if GetOption(value[2]) == nil then
-      -- Disabled by default, require user to enable for safety
-      AddOption(value[2], false)
+  -- only concat once per loop by using a var
+  local current_option
+  -- Read each formatter in the table
+  for i = 1, #formatters do
+    -- Go through each language of the formatter
+    for inner_i = 1, #formatters[i].supported do
+      -- Creates the options to set languages to individual formatters
+      current_option = formatters[i].supported[inner_i] .. "-formatter"
+      -- Don't create/overwrite if it already exists
+      if GetOption(current_option) == nil then
+        -- Disabled by default, require user to enable for safety
+        -- settings.json example "css-formatter": ""
+        AddOption(current_option, "")
+      end
     end
   end
 end
@@ -315,119 +295,152 @@ end
 
 -- Read the table to get a list of formatters for display
 local function list_supported()
-  local function get_max_len()
-    local value
-    local max_len = 0
-    local cur_len
-    -- Get the biggest length formatter name for building a correctly-sized table for display
-    for i = 1, #fmt_table do
-      value = fmt_table[i]
-
-      cur_len = value[2]:len()
-
-      if cur_len > max_len then
-        max_len = cur_len
-      end
-    end
-
-    return max_len
-  end
-
-  -- Equal to the length of the longest formatter name
-  local max_pad_len = get_max_len()
-
-  -- Used to hold the current formatters length
-  local pad_len
-  -- Used to add padding for display output
-  local pad_string
-
-  local function get_padding(len, pad_char)
+  local function get_pad(len, pad_char)
+    -- Remove any negative sign and round up, since we don't want negatives or decimals
+    len = math.floor(math.abs(len))
     -- Add vals into a table. Concat in a loop is laggy
     local padding = {}
     for i = 1, len do
       padding[i] = pad_char
     end
-    -- Localize for speed
-    local table_concat = table.concat
-    return table_concat(padding)
+    return table.concat(padding)
   end
 
-  -- index 1 is used to keep track of already-added formatters (to prevent duplicates)
-  -- index 2 is actually displayed to the user
-  local unique_formatters = {}
+  -- Used to hold the display output
+  local display_list = {}
 
-  local function check_contains(check_against)
-    -- See if the value is already in the table
-    for index = 1, #unique_formatters do
-      if unique_formatters[index] == check_against then
-        -- Found a match
-        return true
+  -- Returns the index of the language if already saved
+  local function contains_lang(self, lang)
+    for i = 1, #self do
+      if self[i].language == lang then
+        return i
       end
     end
-    -- No match
-    return false
+    -- Return nil if it doesn't contain it yet
+    return nil
   end
 
-  local display_supported = {}
-  -- Holds a single index of fmt_table in the loop
-  local value
-  -- Used to keep track of what index we're on in display_supported & unique_formatters
-  local table_count = 1
-  -- Equal to the current formaters GetOption() status, to show if it's on or off
-  local on_off
-  -- A bool to tell the loop if the current formatter was already found
-  local already_contains
+  local found_index, cur_len
+  -- The length of the longest language and cli
+  local max_lang_len, max_cli_len, max_validcli_len = 0, 0, 0
+  -- Builds the display_list off of the things in the formatters table
+  -- For efficiency, we also get max len's in this instead of running another for loop
+  for i = 1, #formatters do
+    -- Get the max cli len
+    cur_len = formatters[i].cli:len()
+    if cur_len > max_cli_len then
+      max_cli_len = cur_len
+    end
 
-  -- Loop through the main fmt_table, adding un-added formatters to the display table
-  for i = 1, #fmt_table do
-    -- Hold the current index val for checking
-    value = fmt_table[i]
+    for inner_i = 1, #formatters[i].supported do
+      -- Get max lang len
+      cur_len = formatters[i].supported[inner_i]:len()
+      if cur_len > max_lang_len then
+        max_lang_len = cur_len
+      end
 
-    -- True/False if the current formatter cmd is already in the supported table
-    already_contains = check_contains(value[2])
-
-    -- Don't duplicate inserts, such as "prettier", when they support multiple filetypes...
-    -- since the fmt_table will technically contain lots of duplicate formatters on any multi-filetype formatters
-    if not already_contains then
-      -- Lets the user know what's enabled & what's not
-      -- The weird spacing is to line up with "|Status|" correctly
-      if GetOption(value[2]) then
-        on_off = "on "
+      -- Check if we already added the language to display_list
+      found_index = contains_lang(display_list, formatters[i].supported[inner_i])
+      if found_index ~= nil then
+        -- Append the cli command into its valid formatters table
+        display_list[found_index]:set_valid_cli(formatters[i].cli)
+        -- Find the longest valid_cli for padding
+        cur_len = display_list[found_index]:get_valid_cli():len()
       else
-        on_off = "off"
+        -- Doesn't contain, so add it in
+        display_list[#display_list + 1] = {
+          -- The language type
+          ["language"] = formatters[i].supported[inner_i],
+          -- The option used in AddOption()
+          ["option"] = formatters[i].supported[inner_i] .. "-formatter",
+          -- Holds a list of valid formatters (cli cmd) for the language
+          ["valid_cli"] = {formatters[i].cli},
+          -- Set/append a cli command into the display_list
+          ["set_valid_cli"] = function(self, new_cli)
+            -- Append on the new cli cmd to the table
+            self.valid_cli[#self.valid_cli + 1] = new_cli
+          end,
+          -- Get what the option is set to
+          ["get_status"] = function(self)
+            -- Get the lang-formatter, then check what it's set to
+            return GetOption(self.option)
+          end,
+          -- Get the sorted formatters for prettyness
+          ["get_valid_cli"] = function(self)
+            -- Sort alphabetically
+            table.sort(self.valid_cli)
+            -- Return with commas and a space between each
+            return table.concat(self.valid_cli, ", ")
+          end
+        }
+        -- Find the longest valid_cli for padding
+        cur_len = display_list[#display_list]:get_valid_cli():len()
       end
-      -- Fill a string with empty space equal to (longest formatter - current formatter)
-      pad_len = max_pad_len - value[2]:len()
-      pad_string = get_padding(pad_len, " ")
-
-      -- Insert value[2] by itself to be checked against
-      unique_formatters[table_count] = value[2]
-      -- Purely for display to the user from inside of Micro's log
-      display_supported[table_count] = "|" .. value[2] .. pad_string .. "|  " .. on_off .. "   |"
-      -- Increment to not overwrite already added values
-      table_count = table_count + 1
+      -- cur_len is set to the current cli len above
+      if cur_len > max_validcli_len then
+        max_validcli_len = cur_len
+      end
     end
   end
+
+  -- -formatter adds 10 chars
+  local max_opt_len = max_lang_len + 10
 
   -- Output the formatters supported to the log, seperated by newlines
-  -- 11 is the length of "  Formatter"
-  pad_len = max_pad_len - 11
-  pad_string = get_padding(pad_len, " ")
-  local table_top = "|  Formatter" .. pad_string .. "| Status |\n"
+  -- Minus 1 less than we normally would because of the spaces we use in "| "
+  local table_top =
+    "| " ..
+    "Language" ..
+      get_pad(max_lang_len - 8, " ") ..
+        " | " ..
+          "Option" ..
+            get_pad(max_opt_len - 6, " ") ..
+              " | " ..
+                "Status" ..
+                  get_pad(max_cli_len - 6, " ") ..
+                    " | " .. "Valid Formatter(s)" .. get_pad(max_validcli_len - 18, " ") .. " |\n"
   -- Use dashes to make a pretty table
-  pad_string = get_padding(max_pad_len, "-")
-  local separator = "+" .. pad_string .. "+--------+\n"
+  -- Add 2 because of the spaces used in "| " and " |"
+  local separator =
+    "+" ..
+    get_pad(max_lang_len + 2, "-") ..
+      "+" ..
+        get_pad(max_opt_len + 2, "-") ..
+          "+" .. get_pad(max_cli_len + 2, "-") .. "+" .. get_pad(max_validcli_len + 2, "-") .. "+\n"
 
-  -- Localize for speed
-  local table_sort = table.sort
-  local table_concat = table.concat
+  -- Add elements to a table, instead of concatenating in a loop (for speed)
+  local table_to_concat = {}
 
-  -- Sort alphabetically.
-  table_sort(display_supported)
+  local cur_cli_setting, cur_lang_len, cur_cli_len, cur_validcli
+  for i = 1, #display_list do
+    cur_lang_len = display_list[i].language:len()
+    -- Returns the GetOption()
+    cur_cli_setting = display_list[i]:get_status()
+    -- The :len() of display_list[i]:get_status()
+    cur_cli_len = cur_cli_setting:len()
+    -- A sorted and concatenated string of all the valid cli commands, separated by ", "
+    cur_validcli = display_list[i]:get_valid_cli()
 
-  -- Output the list (table) of formatters to the log
+    -- What we'll actually display into the log
+    table_to_concat[i] =
+      "| " ..
+      display_list[i].language ..
+        get_pad(max_lang_len - cur_lang_len, " ") ..
+          " | " ..
+            display_list[i].option ..
+              get_pad(max_opt_len - display_list[i].option:len(), " ") ..
+                " | " ..
+                  cur_cli_setting ..
+                    get_pad(max_cli_len - cur_cli_len, " ") ..
+                      " | " .. cur_validcli .. get_pad(max_validcli_len - cur_validcli:len(), " ") .. " |"
+  end
+
+  -- Sort the display list stuff
+  table.sort(table_to_concat)
+
+  -- Output the list of languages/options/status/valid formatters to the log
   messenger:AddLog(
-    "\n" .. separator .. table_top .. separator .. table_concat(display_supported, "\n") .. "\n" .. separator
+    "\n" .. separator .. table_top .. separator .. table.concat(table_to_concat, "\n") .. "\n" .. separator
   )
 
   messenger:Message("fmt: Formatter list printed to the log.")
@@ -451,101 +464,102 @@ function onStderr(err)
   end
 end
 
+local function find_cli_index(fmt_name)
+  for i = 1, #formatters do
+    if formatters[i].cli == fmt_name then
+      return i
+    end
+  end
+  return nil
+end
+
 -- Find the correct formatter, its arguments, and then run on the current file
-local function format()
+local function format(tar_index)
   -- Prevent infinite loop of onSave()
   CurView():Save(false)
 
   -- Makes sure the table is using up-to-date settings in args
-  if saved_setting["indent"] ~= indent_size() or saved_setting["tabs"] ~= using_tabs() then
+  if saved_setting["indent"] ~= GetOption("tabsize") or saved_setting["tabs"] ~= using_tabs() then
+    messenger:AddLog("fmt: Re-initializing formatters because settings don't match")
     -- Reload the table (to get new args) if the user has changed their settings since opening Micro
     init_table()
   end
 
   -- Save filetype for checking
-  local file_type = get_extension(CurView())
+  local file_type = get_filetype(CurView())
   -- Stop running if no extension/filetype
   if file_type == nil then
+    messenger:AddLog("fmt: Exiting early since the filetype couldn't be identified")
     do
       return
     end
   end
 
-  local file_path = CurView().Buf.Path
-
-  local function get_valid_fmt()
-    -- localize for speed
-    local type = type
-    local setmetatable = setmetatable
-    local getmetatable = getmetatable
-    -- Needed to prevent table.insert from inserting into "fmt_table" when targetting "target_fmt"
-    local function deepcopy(orig)
-      local orig_type = type(orig)
-      local copy
-      if orig_type == "table" then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-          copy[deepcopy(orig_key)] = deepcopy(orig_value)
+  -- tar_index is nil when run on auto-save, or when using the "fmt" command (without a specified formatter)
+  if tar_index == nil then
+    -- If no optional passed target index, try to get corresponding formatter for the filetype
+    local lang_setting = GetOption(file_type .. "-formatter")
+    -- lang_setting will be "" if nothing is set to it
+    if lang_setting ~= "" then
+      -- Try to find the index of the formatter set to the option
+      tar_index = find_cli_index(lang_setting)
+      -- nil if the thing in the setting isn't a supported formatter
+      if tar_index ~= nil then
+        -- Check if the formatter supports the filetype
+        if not formatters[tar_index]:supports_type(file_type) then
+          -- Tell the user that the formatter in their option setting doesn't support the filetype
+          messenger:Error(
+            'fmt: Not formatting "' ..
+              CurView().Buf.Path ..
+                '" because "' .. lang_setting .. '" doesn\'t support the file-type "' .. file_type .. '"'
+          )
+          -- Exit because the formatter in their option setting doesn't support the filetype
+          do
+            return
+          end
         end
-        setmetatable(copy, deepcopy(getmetatable(orig)))
-      else -- number, string, boolean, etc
-        copy = orig
-      end
-      return copy
-    end
-
-    local values
-    -- Parse the table, looking for a matching filetype
-    -- Note that if there are multiples of the same filetype, only the first will get used
-    for i = 1, #fmt_table do
-      values = fmt_table[i]
-      -- Check if the formatter supports the found filetype
-      if values[1] == file_type then
-        -- Only use the specified formatter if it's enabled
-        if GetOption(values[2]) then
-          -- Save the table's values of the desired index to use below..
-          return deepcopy(values)
+      else
+        -- Exit because it couldn't find a formatter that matches the option setting
+        do
+          return
         end
       end
-    end
-    -- Return nil if there aren't matches
-    return nil
-  end
-
-  local target_fmt = get_valid_fmt()
-
-  -- target_fmt[1] is filetype
-  -- target_fmt[2] is the literal command (rustfmt, gofmt, etc.)
-  -- target_fmt[3] is the (optional) args
-
-  -- Only do anything if the filetype has is a supported formatter
-  if target_fmt ~= nil then
-    -- Check for if any args (index 3 is a table of args)
-    -- Formatters like `rustfmt` will have nil args
-    if next_table(target_fmt[3]) ~= nil then
-      -- Localize for speed
-      local table_insert = table.insert
-      -- Add the file to the end of args | table.insert to ensure order
-      table_insert(target_fmt[3], file_path)
     else
-      -- If there aren't args (such as for `rustfmt`) then just equal the filepath
-      -- Has to be a table because JobSpawn requires the args as a table/array
-      target_fmt[3] = {file_path}
+      -- Exit because the current option setting is empty
+      do
+        return
+      end
     end
-
-    -- Build the string to show the user what'll actually run
-    local output_string = target_fmt[2]
-    -- Localize for speed | ipairs to ensure order
-    local ipairs = ipairs
-    -- Add all the args/filepath to the display string
-    for _, v in ipairs(target_fmt[3]) do
-      output_string = output_string .. " " .. v
+  elseif not formatters[tar_index]:supports_type(file_type) then
+    -- This only runs if the user manually ran "fmt formattername" and the specified formatter doesn't support the filetype
+    messenger:Error('fmt: "' .. formatters[tar_index].cli .. '" doesn\'t support the file-type "' .. file_type .. '"')
+    -- Exit because it doesn't support the filetype
+    do
+      return
     end
-    messenger:AddLog('fmt: Running "' .. output_string .. '"')
-
-    -- Micro binding to Golang's exec.Command()
-    JobSpawn(target_fmt[2], target_fmt[3], "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
   end
+
+  -- Get a valid table for JobSpawn's arguments
+  local job_args = {}
+  if next(formatters[tar_index].args) == nil then
+    -- If empty args, use the path by itself
+    job_args = {CurView().Buf.Path}
+  else
+    -- Build up the args
+    for index = 1, #formatters[tar_index].args do
+      -- Add in the current args
+      job_args[index] = formatters[tar_index].args[index]
+    end
+    -- Append the path to the end
+    job_args[#job_args + 1] = CurView().Buf.Path
+  end
+  -- Get the job_args as a string for the log
+  local display_args = table.concat(job_args, " ")
+  -- Log exactly what will run and on what file
+  messenger:AddLog('fmt: Running "' .. formatters[tar_index].cli .. " " .. display_args .. '"')
+
+  -- Actually run the command with Micro's binding to the Go exec.Command()
+  JobSpawn(formatters[tar_index].cli, job_args, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
 end
 
 function onSave(view)
@@ -556,7 +570,7 @@ function onSave(view)
 end
 
 -- A meta-command that triggers appropriate functions based on input
-function fmt_usr_input(input)
+function fmt_usr_input(input, ex_input)
   -- nil means they only typed "fmt"
   if input == nil then
     format()
@@ -565,9 +579,17 @@ function fmt_usr_input(input)
   elseif input == "update" then
     -- Lets the user force an update to the table
     -- Mostly for if they added a conf file to the dir and didn't close Micro
+    -- Also good for if the user changed Micro's settings without relaunching
     init_table()
   else
-    messenger:Message("fmt: Unknown command! Run 'help fmt' for info.")
+    -- Check if the passed input == an existing formatter cli command
+    local index = find_cli_index(input)
+    if index ~= nil then
+      -- Runs the formatter manually with a specific formatter against the current file
+      format(index)
+    else
+      messenger:Message("fmt: Unknown command! Run 'help fmt' for info.")
+    end
   end
 end
 

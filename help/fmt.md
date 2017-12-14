@@ -2,16 +2,19 @@
 
 To manually run formatting on the current file, use the `fmt` command.
 
+To manually run a specific formatter on the current file, use the `fmt formattername` command.
+
 When saving a supported file-type, the plugin will automatically run on the file
 & save any changes, unless you set `fmt-onsave` to false.
 
 To get the list of supported formatters, run the `fmt list` command. A table of
 supported formatters will be printed to Micro's log.
 
-To enable the individual formatters, run `set FormatterName true`. The specific
-names can be found in the list from `fmt list`
+To set a formatter to be used on a specific language, run `set languagename-formatter formattername`.  
+The specific names can be found in the list from `fmt list`
+To refresh the in-memory settings, run `fmt update`. This is useful if you changed your editor settings, or added a config file to your working directory.
 
-Please note that all formatters are disabled by default, as to not accidentally
+Please note that formatting of all languages is disabled by default, as to not accidentally
 format your files. You must enable them individually for this plugin to do
 anything.
 
