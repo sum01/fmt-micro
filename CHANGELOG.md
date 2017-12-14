@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [3.0.0] - 2017-12-13
+
 ### Added
 
 * Tab support for Luafmt (new feature in the formatter itself)
@@ -205,7 +207,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v2.4.0...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/sum01/fmt-micro/compare/v2.4.0...v3.0.0
 [2.4.0]: https://github.com/sum01/fmt-micro/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/sum01/fmt-micro/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/sum01/fmt-micro/compare/v2.1.0...v2.2.0
