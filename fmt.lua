@@ -1,4 +1,4 @@
-VERSION = "3.0.0"
+VERSION = "3.1.0"
 
 -- Lets the user disable the onSave() formatting
 if GetOption("fmt-onsave") == nil then
