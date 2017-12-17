@@ -2,29 +2,36 @@ VERSION = "3.0.0"
 
 -- Lets the user disable the onSave() formatting
 if GetOption("fmt-onsave") == nil then
+  -- Default onsave formatter as enabled
   AddOption("fmt-onsave", true)
 end
 
 -- The table that holds all the formatter objects for access from other functions
 local formatters = {}
 -- Hold the last used settings to be checked against later
-local saved_setting = {["indent"] = nil, ["tabs"] = nil}
+local saved_settings = {["indent"] = nil, ["tabs"] = nil}
 
 local function using_tabs()
-  -- We need to use this with concat in init_table, so use a string instead of bool
+  -- We need to use this as a string in init_table for the args
   local tabs = "false"
-  -- returns a bool that tells whether the user is using spaces or not
-  -- For our purposes, we reverse to an is_tabs for simplicity, instead of having to reverse every time
+
+  -- tabstospaces returns a bool that tells whether the user is using spaces or not.
+  -- For our purposes, we reverse by using "not" for simplicity, instead of having to reverse every time...
+  -- because most formatters have a --use-tabs true/false, instead of a --use-spaces
   if not GetOption("tabstospaces") then
     tabs = "true"
   end
   return tabs
 end
 
+-- Accepts either a CurView() or literal filepath..
+-- and returns either Micro's CurView():FileType(), or the extension string.
 local function get_filetype(x)
+  -- Uses Go's path.Ext() to get the literal file extension, as fallback
   local function get_gopath_ext(f_path)
-    -- Grab the extension if Micro failed
+    -- Go's path lib for getting a path's extension
     local golib_path = import("path")
+    -- Use the path.Ext command to get the extension (with period), if it exists
     local f_type = golib_path.Ext(f_path)
 
     -- Returns an empty string if it doesn't find an extension
@@ -55,8 +62,8 @@ local function get_filetype(x)
   return file_type
 end
 
--- Returns a full path to either a config file in the directory, or our bundled one
--- extension should be a string of the file extension needed, sans period
+-- Returns a full path to either a config file in the directory, or our bundled one.
+-- extension should be a string of the file extension needed, sans period.
 -- name is the folder name in our bundled configs | ex: fmt-micro/configs/NAME
 local function get_conf(name, extension)
   -- The current local dir
@@ -90,7 +97,7 @@ local function get_conf(name, extension)
   return bundled_conf
 end
 
--- Make sure the input is a table
+-- A quick check if something is a table, and converts it to one if it isn't
 local function to_t(input)
   -- Check if it's a table or not
   if type(input) ~= "table" then
@@ -104,16 +111,16 @@ end
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 local function init_table()
   -- Save the used settings to be checked against later in the format() function
-  saved_setting["indent"] = GetOption("tabsize")
-  saved_setting["tabs"] = using_tabs()
+  saved_settings.indent = GetOption("tabsize")
+  saved_settings.tabs = using_tabs()
 
   -- Hold the results of creating our formatter objects
-  -- Eventually fed into formatters
+  -- Eventually fed into the formatters table
   local temp_table = {}
 
   -- Cuts down on cruft when inserting a new formatter
   local function insert(supported, cli, args)
-    -- Convert them to a table, if they aren't already
+    -- Convert them to a table, if they aren't already, as other code expects tables
     supported = to_t(supported)
     args = to_t(args)
 
@@ -151,7 +158,7 @@ local function init_table()
   insert(
     {"javascript", "jsx", "flow", "typescript", "css", "less", "scss", "json", "graphql", "markdown"},
     "prettier",
-    {"--use-tabs", saved_setting["tabs"], "--tab-width", saved_setting["indent"], "--write"}
+    {"--use-tabs", saved_settings.tabs, "--tab-width", saved_settings.indent, "--write"}
   )
   -- overwrite is default, and we can't pass config options
   insert("rust", "rustfmt")
@@ -179,7 +186,7 @@ local function init_table()
   insert("marko", "marko-prettyprint")
   insert("ocaml", "ocp-indent")
   -- Overwrite is default if only source (-s) used
-  insert("yaml", "align", {"-p", saved_setting["indent"], "-s"})
+  insert("yaml", "align", {"-p", saved_settings.indent, "-s"})
   insert("haskell", "stylish-haskell", "-i")
   insert("puppet", "puppet-lint", "--fix")
   -- The -a arg can be used multiple times to increase aggresiveness. Unsure of what people prefer, so doing 1.
@@ -188,51 +195,62 @@ local function init_table()
   -- Not configurable by design
   insert("dart", "dartfmt", "-w")
   -- For editor integration, it recommends --silent. It also seems to default to overwrite
-  insert("fortran", "fprettify", {"--indent", saved_setting["indent"], "--silent"})
+  insert("fortran", "fprettify", {"--indent", saved_settings.indent, "--silent"})
 
   -- Keep the more annoying args in a table
-  local unruly_args = {
-    ["htmlbeautifier"] = {"-t", saved_setting["indent"]},
-    ["coffee-fmt"] = "space",
-    ["pug-beautifier"] = nil,
-    ["perltidy"] = {"-i=", saved_setting["indent"]},
-    ["js-beautify"] = {"-s", saved_setting["indent"]},
-    ["shfmt"] = saved_setting["indent"],
-    ["beautysh"] = {"-i", saved_setting["indent"]},
-    ["dfmt"] = {"space", "--indent_size"},
-    -- Just used to convert tabs to spaces
-    ["tidy"] = saved_setting["indent"],
-    ["luafmt"] = saved_setting["indent"]
+  local unruly = {
+    ["args"] = {},
+    ["set"] = function(self, name, args)
+      self.args[name] = args
+    end,
+    ["get"] = function(self, name)
+      return self.args[name]
+    end
   }
-  -- Setting the non-flexible args | Seriously, why can't they be multi-purpose like these other formatters?..
-  if saved_setting["tabs"] == "true" then
-    unruly_args["htmlbeautifier"] = "-T"
-    unruly_args["coffee-fmt"] = "tab"
-    unruly_args["pug-beautifier"] = {"-t", saved_setting["indent"]}
-    unruly_args["perltidy"] = {"-et=", saved_setting["indent"]}
-    unruly_args["js-beautify"] = "-t"
+
+  -- Setting the non-flexible args
+  if saved_settings.tabs == "true" then
+    -- The various arguments used if the user is using tabs instead of spaces...
+    unruly:set("htmlbeautifier", "-T")
+    unruly:set("coffee-fmt", "tab")
+    unruly:set("pug-beautifier", {"-t", saved_settings.indent})
+    unruly:set("perltidy", {"-et=", saved_settings.indent})
+    unruly:set("js-beautify", "-t")
     -- 0 signifies tabs
-    unruly_args["shfmt"] = "0"
-    unruly_args["beautysh"] = "-t"
-    unruly_args["dfmt"] = {"tab", "--tab_width"}
+    unruly:set("shfmt", "0")
+    unruly:set("beautysh", "-t")
+    unruly:set("dfmt", {"tab", "--tab_width"})
     -- Tells it to retain tabs, instead of converting them to spaces
-    unruly_args["tidy"] = "0"
+    unruly:set("tidy", "0")
     -- --use-tabs just tells it to use tabs, it doesn't take a true/false
-    unruly_args["luafmt"] = {saved_setting["indent"], "--use-tabs"}
+    unruly:set("luafmt", {saved_settings.indent, "--use-tabs"})
+  else
+    -- The various arguments used if the user is using spaces instead of tabs..
+    unruly:set("htmlbeautifier", {"-t", saved_settings.indent})
+    unruly:set("coffee-fmt", "space")
+    unruly:set("pug-beautifier", nil)
+    unruly:set("perltidy", {"-i=", saved_settings.indent})
+    unruly:set("js-beautify", {"-s", saved_settings.indent})
+    unruly:set("shfmt", saved_settings.indent)
+    unruly:set("beautysh", {"-i", saved_settings.indent})
+    unruly:set("dfmt", {"space", "--indent_size"})
+    -- Just used to convert tabs to spaces
+    unruly:set("tidy", saved_settings.indent)
+    unruly:set("luafmt", saved_settings.indent)
   end
 
-  insert("html", "htmlbeautifier", unruly_args["htmlbeautifier"])
+  insert("html", "htmlbeautifier", unruly:get("htmlbeautifier"))
   insert(
     "coffeescript",
     "coffee-fmt",
-    {"--indent_style", unruly_args["coffee-fmt"], "--indent_size", saved_setting["indent"], "-i"}
+    {"--indent_style", unruly:get("coffee-fmt"), "--indent_size", saved_settings.indent, "-i"}
   )
-  insert("pug", "pug-beautifier", unruly_args["pug-beautifier"])
-  insert("perl", "perltidy", unruly_args["perltidy"])
-  insert({"css", "html", "javascript"}, "js-beautify", {unruly_args["js-beautify"], "-r", "-f"})
-  insert("shell", "shfmt", {"-i", unruly_args["shfmt"], "-s", "-w"})
-  insert("shell", "beautysh.py", {unruly_args["beautysh"], "-f"})
-  insert("d", "dfmt", {"--indent_style", unruly_args["dfmt"], saved_setting["indent"], "-i"})
+  insert("pug", "pug-beautifier", unruly:get("pug-beautifier"))
+  insert("perl", "perltidy", unruly:get("perltidy"))
+  insert({"css", "html", "javascript"}, "js-beautify", {unruly:get("js-beautify"), "-r", "-f"})
+  insert("shell", "shfmt", {"-i", unruly:get("shfmt"), "-s", "-w"})
+  insert("shell", "beautysh.py", {unruly:get("beautysh"), "-f"})
+  insert("d", "dfmt", {"--indent_style", unruly:get("dfmt"), saved_settings.indent, "-i"})
   -- drop-empty-elements is false because Bootstrap uses empty elements
   insert(
     {"html", "xml"},
@@ -241,26 +259,26 @@ local function init_table()
       "--indent",
       "auto",
       "--indent-spaces",
-      saved_setting["indent"],
+      saved_settings.indent,
       "--tab-size",
-      unruly_args["tidy"],
+      unruly:get("tidy"),
       "--indent-with-tabs",
-      saved_setting["tabs"],
+      saved_settings.tabs,
       "--drop-empty-elements",
       "false",
       "-m"
     }
   )
   -- Doesn't seem to have an actual option for tabs/spaces. stdout is default.
-  insert("lua", "luafmt", {"-i", unruly_args["luafmt"], "-w", "replace"})
+  insert("lua", "luafmt", {"-i", unruly:get("luafmt"), "-w", "replace"})
 
   -- Put the table into our permanent/global table
   formatters = temp_table
 end
 
--- Declares the options to enable/disable formatter(s)
+-- Declares the options to enable/disable formatter(s) in the user settings.json
 local function create_options()
-  -- only concat once per loop by using a var
+  -- Only concat once per loop by using a var
   local current_option
   -- Read each formatter in the table
   for i = 1, #formatters do
@@ -474,7 +492,7 @@ local function format(tar_index)
   CurView():Save(false)
 
   -- Makes sure the table is using up-to-date settings in args
-  if saved_setting["indent"] ~= GetOption("tabsize") or saved_setting["tabs"] ~= using_tabs() then
+  if saved_settings.indent ~= GetOption("tabsize") or saved_settings.tabs ~= using_tabs() then
     messenger:AddLog("fmt: Re-initializing formatters because settings don't match")
     -- Reload the table (to get new args) if the user has changed their settings since opening Micro
     init_table()
@@ -548,10 +566,8 @@ local function format(tar_index)
     -- Append the path to the end
     job_args[#job_args + 1] = CurView().Buf.Path
   end
-  -- Get the job_args as a string for the log
-  local display_args = table.concat(job_args, " ")
   -- Log exactly what will run and on what file
-  messenger:AddLog('fmt: Running "' .. formatters[tar_index].cli .. " " .. display_args .. '"')
+  messenger:AddLog('fmt: Running "' .. formatters[tar_index].cli .. " " .. table.concat(job_args, " ") .. '"')
 
   -- Actually run the command with Micro's binding to the Go exec.Command()
   JobSpawn(formatters[tar_index].cli, job_args, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
@@ -600,7 +616,7 @@ local function unset_all(formatter_name)
       if GetOption(tar_option) == formatters[valid_index].cli then
         -- Clear the option
         AddOption(tar_option, "")
-        -- Log the specific options we're setting, and to which formatter
+        -- Log the specific option we're unsetting
         messenger:AddLog('fmt: Unsetting "' .. tar_option .. '"')
       end
     end
@@ -652,7 +668,7 @@ function fmt_usr_input(input, ex_input)
       -- Runs the formatter manually with a specific formatter against the current file
       format(index)
     else
-      messenger:Message("fmt: Unknown command! Run 'help fmt' for info.")
+      messenger:Message('fmt: Unknown command! Run "help fmt" for info')
     end
   end
 end
