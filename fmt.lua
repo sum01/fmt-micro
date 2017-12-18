@@ -8,8 +8,6 @@ end
 
 -- The table that holds all the formatter objects for access from other functions
 local formatters = {}
--- Hold the last used settings to be checked against later
-local saved_settings = {["indent"] = nil, ["tabs"] = nil}
 
 local function using_tabs()
   -- We need to use this as a string in init_table for the args
@@ -23,6 +21,23 @@ local function using_tabs()
   end
   return tabs
 end
+
+-- Hold the last used settings to be checked against later
+local saved_settings = {
+  ["indent"] = nil,
+  ["tabs"] = nil,
+  ["update"] = function(self)
+    self.indent = GetOption("tabsize")
+    self.tabs = using_tabs()
+  end,
+  ["are_correct"] = function(self)
+    if self.indent == GetOption("tabsize") and self.tabs == using_tabs() then
+      return true
+    else
+      return false
+    end
+  end
+}
 
 -- Accepts either a CurView() or literal filepath..
 -- and returns either Micro's CurView():FileType(), or the extension string.
@@ -111,8 +126,7 @@ end
 -- Initializes the dictionary of languages, their formatters, and the corresponding arguments
 local function init_table()
   -- Save the used settings to be checked against later in the format() function
-  saved_settings.indent = GetOption("tabsize")
-  saved_settings.tabs = using_tabs()
+  saved_settings:update()
 
   -- Hold the results of creating our formatter objects
   -- Eventually fed into the formatters table
@@ -123,6 +137,24 @@ local function init_table()
     -- Convert them to a table, if they aren't already, as other code expects tables
     supported = to_t(supported)
     args = to_t(args)
+
+    local new_args = {}
+    -- Unfold the nested args into a single table
+    for i = 1, #args do
+      -- Check if there's a nested table in the args
+      if type(args[i]) == "table" then
+        -- Currently only have max 1 nested, so no need for recursion/whatever
+        for inner_i = 1, #args[i] do
+          -- Unfold the nested tables into a single table
+          new_args[#new_args + 1] = args[i][inner_i]
+        end
+      else
+        -- Add the arg into the new table
+        new_args[#new_args + 1] = args[i]
+      end
+    end
+
+    args = new_args
 
     -- Save the formatter as an object in the temporary table
     temp_table[#temp_table + 1] = {
@@ -228,7 +260,8 @@ local function init_table()
     -- The various arguments used if the user is using spaces instead of tabs..
     unruly:set("htmlbeautifier", {"-t", saved_settings.indent})
     unruly:set("coffee-fmt", "space")
-    unruly:set("pug-beautifier", nil)
+    -- Doesn't use anything on spaces
+    unruly:set("pug-beautifier")
     unruly:set("perltidy", {"-i=", saved_settings.indent})
     unruly:set("js-beautify", {"-s", saved_settings.indent})
     unruly:set("shfmt", saved_settings.indent)
@@ -492,7 +525,7 @@ local function format(tar_index)
   CurView():Save(false)
 
   -- Makes sure the table is using up-to-date settings in args
-  if saved_settings.indent ~= GetOption("tabsize") or saved_settings.tabs ~= using_tabs() then
+  if not saved_settings:are_correct() then
     messenger:AddLog("fmt: Re-initializing formatters because settings don't match")
     -- Reload the table (to get new args) if the user has changed their settings since opening Micro
     init_table()
@@ -554,18 +587,12 @@ local function format(tar_index)
 
   -- Get a valid table for JobSpawn's arguments
   local job_args = {}
-  if next(formatters[tar_index].args) == nil then
-    -- If empty args, use the path by itself
-    job_args = {CurView().Buf.Path}
-  else
-    -- Build up the args
-    for index = 1, #formatters[tar_index].args do
-      -- Add in the current args
-      job_args[index] = formatters[tar_index].args[index]
-    end
-    -- Append the path to the end
-    job_args[#job_args + 1] = CurView().Buf.Path
+  -- Build the job args by getting args in order
+  for i = 1, #formatters[tar_index].args do
+    job_args[i] = formatters[tar_index].args[i]
   end
+  -- Append the path to the end
+  job_args[#job_args + 1] = CurView().Buf.Path
   -- Log exactly what will run and on what file
   messenger:AddLog('fmt: Running "' .. formatters[tar_index].cli .. " " .. table.concat(job_args, " ") .. '"')
 
