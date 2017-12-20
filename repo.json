@@ -5,10 +5,12 @@
 		"Tags": [
 			"beautifying",
 			"beautifier",
+			"beautify",
 			"formatter",
 			"formatting",
 			"multi-language",
-			"pretty-printer"
+			"pretty-printer",
+			"prettifier"
 		],
 		"Versions": [
 			{

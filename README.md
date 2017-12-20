@@ -10,6 +10,8 @@ This plugin does NOT bundle any formatters, so you must install whichever you wa
 
 ## Language Support
 
+Is your favorite formatter missing? Make a request in [the issue tracker](https://github.com/sum01/fmt-micro/issues), or [submit a PR](./CONTRIBUTING.md#adding-another-formatter) :smile:
+
 | Language     | Supported Formatter(s)                  |
 | :----------- | :-------------------------------------- |
 | C            | [clang-format], [uncrustify]            |
