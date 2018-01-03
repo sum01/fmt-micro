@@ -154,8 +154,6 @@ local function init_table()
 			end
 		end
 
-		args = new_args
-
 		-- Save the formatter as an object in the temporary table
 		temp_table[#temp_table + 1] = {
 			-- Its supported filetypes, as a table
@@ -163,7 +161,7 @@ local function init_table()
 			-- The cli command used to run it in JobSpawn
 			["cli"] = cli,
 			-- The arguments, if any, as a table
-			["args"] = args,
+			["args"] = new_args,
 			-- Returns a true/false if the formatters supports the filetype
 			["supports_type"] = function(self, target)
 				for i = 1, #self.supported do
@@ -691,7 +689,7 @@ function fmt_usr_input(input, ex_input)
 			-- Runs the formatter manually with a specific formatter against the current file
 			format(index)
 		else
-			messenger:Message('fmt: Unknown command! Run "help fmt" for info')
+			messenger:Error('fmt: Unknown command! Run "help fmt" for info')
 		end
 	end
 end
