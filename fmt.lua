@@ -521,13 +521,6 @@ local function format(tar_index)
 	-- Prevent infinite loop of onSave()
 	CurView():Save(false)
 
-	-- Makes sure the table is using up-to-date settings in args
-	if not saved_settings:are_correct() then
-		messenger:AddLog("fmt: Re-initializing formatters because settings don't match")
-		-- Reload the table (to get new args) if the user has changed their settings since opening Micro
-		init_table()
-	end
-
 	-- Save filetype for checking
 	local file_type = get_filetype(CurView())
 	-- Stop running if no extension/filetype
@@ -538,62 +531,78 @@ local function format(tar_index)
 		end
 	end
 
-	-- tar_index is nil when run on auto-save, or when using the "fmt" command (without a specified formatter)
-	if tar_index == nil then
-		-- If no optional passed target index, try to get corresponding formatter for the filetype
-		local lang_setting = GetOption(file_type .. "-formatter")
-		-- lang_setting will be "" if nothing is set to it
-		if lang_setting ~= "" then
-			-- Try to find the index of the formatter set to the option
-			tar_index = find_cli_index(lang_setting)
-			-- nil if the thing in the setting isn't a supported formatter
-			if tar_index ~= nil then
-				-- Check if the formatter supports the filetype
-				if not formatters[tar_index]:supports_type(file_type) then
-					-- Tell the user that the formatter in their option setting doesn't support the filetype
-					messenger:Error(
-						'fmt: Not formatting "' ..
-							CurView().Buf.Path .. '" because "' .. lang_setting .. '" doesn\'t support the file-type "' .. file_type .. '"'
-					)
-					-- Exit because the formatter in their option setting doesn't support the filetype
-					do
-						return
-					end
-				end
+	local custom_fmt = GetOption("fmt|" .. file_type)
+	local cli = {
+		["cmd"] = nil,
+		["args"] = {},
+		["set_arg"] = function(self, new_arg)
+			self.args[#self.args + 1] = new_arg
+		end
+	}
+
+	if custom_fmt ~= nil then
+		local is_first = true
+		for match in custom_fmt:gmatch("%S+") do
+			if is_first then
+				cli.cmd = match
+				is_first = false
 			else
-				-- Exit because it couldn't find a formatter that matches the option setting
+				-- cli[1] will be the command, the rest will be the args
+				cli:set_arg(match)
+			end
+		end
+	else
+		-- Makes sure the table is using up-to-date settings in args
+		if not saved_settings:are_correct() then
+			messenger:AddLog("fmt: Re-initializing formatters because settings don't match")
+			-- Reload the table (to get new args) if the user has changed their settings since opening Micro
+			init_table()
+		end
+
+		-- tar_index is nil if run on auto-save, or if the "fmt" command is used without a formatter
+		if tar_index == nil then
+			tar_index = find_cli_index(GetOption(file_type .. "-formatter"))
+			-- If we weren't able to find a formatter, exit
+			if tar_index == nil then
 				do
 					return
 				end
 			end
-		else
-			-- Exit because the current option setting is empty
+		end
+
+		-- Make sure the formatter supports the filetype
+		if not formatters[tar_index]:supports_type(file_type) then
+			-- This only runs if the user manually ran "fmt formattername" and the specified formatter doesn't support the filetype
+			messenger:Error('fmt: "' .. formatters[tar_index].cli .. '" doesn\'t support the file-type "' .. file_type .. '"')
+			-- Exit because it doesn't support the filetype
 			do
 				return
 			end
 		end
-	elseif not formatters[tar_index]:supports_type(file_type) then
-		-- This only runs if the user manually ran "fmt formattername" and the specified formatter doesn't support the filetype
-		messenger:Error('fmt: "' .. formatters[tar_index].cli .. '" doesn\'t support the file-type "' .. file_type .. '"')
-		-- Exit because it doesn't support the filetype
+
+		-- Fill the cli table with the commands
+		cli.cmd = formatters[tar_index].cli
+		-- Build the job args by getting args in order
+		for i = 1, #formatters[tar_index].args do
+			cli:set_arg(formatters[tar_index].args[i])
+		end
+	end
+
+	-- If no formatter command was found, exit
+	if cli.cmd == nil then
+		messenger:AddLog("fmt error: No cli command found")
 		do
 			return
 		end
 	end
 
-	-- Get a valid table for JobSpawn's arguments
-	local job_args = {}
-	-- Build the job args by getting args in order
-	for i = 1, #formatters[tar_index].args do
-		job_args[i] = formatters[tar_index].args[i]
-	end
 	-- Append the path to the end
-	job_args[#job_args + 1] = CurView().Buf.Path
+	cli:set_arg(CurView().Buf.AbsPath)
 	-- Log exactly what will run and on what file
-	messenger:AddLog('fmt: Running "' .. formatters[tar_index].cli .. " " .. table.concat(job_args, " ") .. '"')
+	messenger:AddLog('fmt: Running "' .. cli.cmd .. " " .. table.concat(cli.args, " ") .. '"')
 
 	-- Actually run the command with Micro's binding to the Go exec.Command()
-	JobSpawn(formatters[tar_index].cli, job_args, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
+	JobSpawn(cli.cmd, cli.args, "fmt.onStdout", "fmt.onStderr", "fmt.onExit")
 end
 
 function onSave(view)

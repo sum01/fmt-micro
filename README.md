@@ -61,7 +61,9 @@ Is your favorite formatter missing? Make a request in [the issue tracker](https:
 
 The formatter will run on-save, unless `fmt-onsave` is set to false.
 
-**Commands:**
+Run `help fmt` to bring up a help file while in Micro.
+
+#### Commands
 
 * `fmt` to run the formatter on the current file.
 * `fmt formattername` to run the specified formatter on the current file without affecting your settings.
@@ -72,7 +74,13 @@ The formatter will run on-save, unless `fmt-onsave` is set to false.
 * `fmt unsetall formattername` to unset all settings the specified formatter is currently set to.  
   This is useful for if you uninstalled a formatter.
 
-Run `help fmt` to bring up a help file while in Micro.
+#### Using Custom Formatter/Args
+
+You can add your own formatter, or just use different args, by adding its command (and filetype) into `settings.json`  
+The format looks like `"fmt|js": "prettier --write"` in your `settings.json`.
+
+Note that you must use the filetype detected by Micro, and if it's `Unknown` then use it's literal filetype extension (ex: `p` for Pawn)  
+You can check a file's type by running `show filetype`
 
 <!-- Table links to make the table easier to read in source -->
 

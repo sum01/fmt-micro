@@ -39,3 +39,11 @@ force settings to refresh.
 
 The fallback paths to the bundled config files don't have hard-coded names, so
 you can delete/edit the one in the relevant folder, and it should still work.
+
+#### Using Custom Formatter/Args
+
+You can add your own formatter, or just use different args, by adding its command (and filetype) into `settings.json`  
+The format looks like `"fmt|js": "prettier --write"` in your `settings.json`.
+
+Note that you must use the filetype detected by Micro, and if it's `Unknown` then use it's literal filetype extension (ex: `p` for Pawn)  
+You can check a file's type by running `show filetype`

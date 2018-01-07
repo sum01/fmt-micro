@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Added
+
+* Support to use an unsupported formatter, or otherwise just override default args.  
+  The setting looks like `"fmt|filetype": "clicmd arg1 arg2 arg3 etc etc"`
+
 ### Changed
 
 * Spaces to tabs
+* From using the file's path to its abspath
 
 ## [3.1.1] - 2017-12-17
 
