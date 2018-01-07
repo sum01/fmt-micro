@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [3.2.0] - 2017-01-07
+
 ### Added
 
 * Support to use an unsupported formatter, or otherwise just override default args.  
@@ -229,7 +231,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 First release
 
-[unreleased]: https://github.com/sum01/fmt-micro/compare/v3.1.1...HEAD
+[unreleased]: https://github.com/sum01/fmt-micro/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/sum01/fmt-micro/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/sum01/fmt-micro/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/sum01/fmt-micro/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/sum01/fmt-micro/compare/v2.4.0...v3.0.0
